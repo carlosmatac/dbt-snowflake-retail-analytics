@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: stg_tpch_orders
+    description: "Capa de staging para los pedidos (orders). Limpia nombres de columnas de la fuente cruda TPCH."
+    columns:
+      - name: order_id
+        description: "Clave primaria única de cada pedido."
+      - name: customer_id
+        description: "Clave foránea que enlaza con el cliente que hizo el pedido."
+      - name: status
+        description: "Estado del pedido (O = Open, F = Finalized, etc.)."
+      - name: total_price
+        description: "Precio total del pedido en la moneda local."
+
+  - name: stg_tpch_customers
+    description: "Capa de staging para los clientes. Contiene información demográfica básica."
+    columns:
+      - name: customer_id
+        description: "Clave primaria única de cada cliente."
+      - name: market_segment
+        description: "Segmento de mercado al que pertenece el cliente (ej. AUTOMOBILE, BUILDING)."
