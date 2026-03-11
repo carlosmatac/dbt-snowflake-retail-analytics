@@ -6,8 +6,17 @@ models:
     columns:
       - name: order_id
         description: "Clave primaria única de cada pedido."
+        tests:
+          - unique
+          - not_null
       - name: customer_id
         description: "Clave foránea que enlaza con el cliente que hizo el pedido."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_tpch_customers')
+                field: customer_id
       - name: status
         description: "Estado del pedido (O = Open, F = Finalized, etc.)."
       - name: total_price
