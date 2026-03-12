@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: "Tabla de hechos (transaccional) de todos los pedidos realizados."
+    columns:
+      - name: order_id
+        description: "Clave primaria del pedido."
+        data_tests:
+          - unique
+          - not_null
+          
+      - name: customer_id
+        description: "Clave foránea que enlaza con dim_customers."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+
+      - name: status
+        # ¡Aprovechamos la macro que creamos antes para documentar el estado!
+        description: "{{ doc('tpch_order_status') }}"
+        
+      - name: total_price
+        description: "Importe total del pedido en la moneda local."
