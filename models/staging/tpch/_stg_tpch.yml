@@ -39,7 +39,7 @@ models:
                 field: customer_id
 
       - name: status
-        description: "Estado del pedido"
+        description: "{{ doc('tpch_order_status') }}"
         data_tests:
           # TEST DE VALORES ACEPTADOS: TPCH usa O (Open), F (Finalized), P (Pending)
           - accepted_values:
