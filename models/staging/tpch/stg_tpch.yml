@@ -1,31 +1,47 @@
 version: 2
 
 models:
-  - name: stg_tpch_orders
-    description: "Capa de staging para los pedidos (orders). Limpia nombres de columnas de la fuente cruda TPCH."
+  - name: stg_tpch_customers
+    description: "Tabla limpia de clientes"
     columns:
-      - name: order_id
-        description: "Clave primaria única de cada pedido."
-        tests:
+      - name: customer_id
+        description: "Clave primaria del cliente"
+        data_tests:
           - unique
           - not_null
-      - name: customer_id
-        description: "Clave foránea que enlaza con el cliente que hizo el pedido."
-        tests:
+
+  - name: stg_tpch_suppliers
+    description: "Tabla limpia de proveedores"
+    columns:
+      - name: supplier_id
+        description: "Clave primaria del proveedor"
+        data_tests:
+          - unique
           - not_null
+
+  - name: stg_tpch_orders
+    description: "Tabla limpia de pedidos"
+    columns:
+      - name: order_id
+        description: "Clave primaria del pedido"
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: customer_id
+        description: "Clave foránea que enlaza con el cliente"
+        data_tests:
+          - not_null
+          # TEST DE RELACIÓN: Comprueba que el cliente exista en la otra tabla
           - relationships:
               arguments:
                 to: ref('stg_tpch_customers')
                 field: customer_id
-      - name: status
-        description: "Estado del pedido (O = Open, F = Finalized, etc.)."
-      - name: total_price
-        description: "Precio total del pedido en la moneda local."
 
-  - name: stg_tpch_customers
-    description: "Capa de staging para los clientes. Contiene información demográfica básica."
-    columns:
-      - name: customer_id
-        description: "Clave primaria única de cada cliente."
-      - name: market_segment
-        description: "Segmento de mercado al que pertenece el cliente (ej. AUTOMOBILE, BUILDING)."
+      - name: status
+        description: "Estado del pedido"
+        data_tests:
+          # TEST DE VALORES ACEPTADOS: TPCH usa O (Open), F (Finalized), P (Pending)
+          - accepted_values:
+              arguments:
+                values: ['O', 'F', 'P']
