@@ -5,6 +5,12 @@ sources:
     database: SNOWFLAKE_SAMPLE_DATA
     schema: TPCH_SF1
     tables:
-      - name: orders
       - name: customer
+        columns:
+          - name: c_custkey       # Usamos el nombre CRUDO de la base de datos
+            data_tests:
+              - unique
+              - not_null
+      - name: orders
       - name: supplier
+      
