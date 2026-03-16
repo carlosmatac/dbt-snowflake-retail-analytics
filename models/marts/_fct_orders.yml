@@ -3,21 +3,20 @@ version: 2
 models:
   - name: fct_orders
     description: "Tabla de hechos (transaccional) de todos los pedidos realizados."
+    latest_version: 1
     
-    # ¡AQUÍ ACTIVAMOS EL CONTRATO!
     config:
       contract:
         enforced: true
         
+    # 1. COLUMNAS BASE (Heredan sus tests y descripciones a todas las versiones)
     columns:
       - name: order_id
         description: "Clave primaria del pedido."
         data_type: number
-        # Esto es el CONSTRAINT que pide el ejercicio (a nivel de base de datos)
         constraints:
           - type: primary_key
           - type: not_null
-        # Esto son los TESTS (a nivel de dbt)
         data_tests:
           - unique
           - not_null
@@ -51,3 +50,19 @@ models:
       - name: total_price
         description: "Importe total del pedido en la moneda local."
         data_type: number
+
+    # 2. DEFINICIÓN DE VERSIONES
+    versions:
+      - v: 1
+        # La versión 1 es idéntica a la base, no hay que añadir absolutamente nada.
+        # Como no le hemos cambiado el nombre al archivo no hay que poner nigun alias aqui
+      - v: 2
+        columns:
+          # Coge todas las columnas base, pero excluye las que hemos borrado/renombrado
+          - include: all
+            exclude: [market_segment, status]
+            
+          # Añade la nueva columna (con sus propios tipos y tests si los tuviera)
+          - name: order_status_code
+            description: "Renombrado desde status."
+            data_type: varchar
