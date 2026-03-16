@@ -3,15 +3,28 @@ version: 2
 models:
   - name: fct_orders
     description: "Tabla de hechos (transaccional) de todos los pedidos realizados."
+    
+    # ¡AQUÍ ACTIVAMOS EL CONTRATO!
+    config:
+      contract:
+        enforced: true
+        
     columns:
       - name: order_id
         description: "Clave primaria del pedido."
+        data_type: number
+        # Esto es el CONSTRAINT que pide el ejercicio (a nivel de base de datos)
+        constraints:
+          - type: primary_key
+          - type: not_null
+        # Esto son los TESTS (a nivel de dbt)
         data_tests:
           - unique
           - not_null
           
       - name: customer_id
         description: "Clave foránea que enlaza con dim_customers."
+        data_type: number
         data_tests:
           - not_null
           - relationships:
@@ -19,9 +32,22 @@ models:
                 to: ref('dim_customers')
                 field: customer_id
 
+      - name: customer_name
+        description: "Nombre del cliente."
+        data_type: varchar
+
+      - name: market_segment
+        description: "Segmento de mercado del cliente."
+        data_type: varchar
+
+      - name: order_date
+        description: "Fecha en la que se realizó el pedido."
+        data_type: date
+
       - name: status
-        # ¡Aprovechamos la macro que creamos antes para documentar el estado!
         description: "{{ doc('tpch_order_status') }}"
+        data_type: varchar
         
       - name: total_price
         description: "Importe total del pedido en la moneda local."
+        data_type: number
