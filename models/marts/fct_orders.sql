@@ -1,6 +1,19 @@
 
+{{
+    config(
+        materialized='incremental',
+        unique_key='order_id'
+    )
+}}
 with orders as (
     select * from {{ ref('stg_tpch_orders') }}
+    
+    -- AQUÍ ESTÁ LA MAGIA INCREMENTAL
+    {% if is_incremental() %}
+        -- Coge solo los pedidos cuya fecha sea mayor que la última fecha 
+        -- que ya tenemos insertada en esta misma tabla ( {{ this }} )
+        where order_date >= (select max(order_date) from {{ this }})
+    {% endif %}
 ),
 
 customers as (
