@@ -54,3 +54,8 @@ models:
           - accepted_values:
               arguments:
                 values: ['O', 'F', 'P']
+      
+      - name: total_price # <-- AÑADES LA COLUMNA CRUDA
+        description: "Precio total del pedido."
+        data_tests:
+          - is_positive    # <-- APLICAS TU TEST GENÉRICO AQUÍ
