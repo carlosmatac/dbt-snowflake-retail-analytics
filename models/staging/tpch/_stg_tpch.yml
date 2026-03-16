@@ -46,6 +46,7 @@ models:
               arguments:
                 to: ref('stg_tpch_customers')
                 field: customer_id
+          
 
       - name: status
         description: "{{ doc('tpch_order_status') }}"
