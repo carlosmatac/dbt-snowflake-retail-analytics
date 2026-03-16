@@ -6,8 +6,11 @@ models:
     latest_version: 1
     
     config:
+      group: core_sales
+      access: public
       contract:
         enforced: true
+      
         
     # 1. COLUMNAS BASE (Heredan sus tests y descripciones a todas las versiones)
     columns:
