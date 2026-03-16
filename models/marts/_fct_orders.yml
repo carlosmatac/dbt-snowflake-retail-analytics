@@ -3,15 +3,30 @@ version: 2
 models:
   - name: fct_orders
     description: "Tabla de hechos (transaccional) de todos los pedidos realizados."
+    latest_version: 1
+    
+    config:
+      group: core_sales
+      access: public
+      contract:
+        enforced: true
+      
+        
+    # 1. COLUMNAS BASE (Heredan sus tests y descripciones a todas las versiones)
     columns:
       - name: order_id
         description: "Clave primaria del pedido."
+        data_type: number
+        constraints:
+          - type: primary_key
+          - type: not_null
         data_tests:
           - unique
           - not_null
           
       - name: customer_id
         description: "Clave foránea que enlaza con dim_customers."
+        data_type: number
         data_tests:
           - not_null
           - relationships:
@@ -19,9 +34,38 @@ models:
                 to: ref('dim_customers')
                 field: customer_id
 
+      - name: customer_name
+        description: "Nombre del cliente."
+        data_type: varchar
+
+      - name: market_segment
+        description: "Segmento de mercado del cliente."
+        data_type: varchar
+
+      - name: order_date
+        description: "Fecha en la que se realizó el pedido."
+        data_type: date
+
       - name: status
-        # ¡Aprovechamos la macro que creamos antes para documentar el estado!
         description: "{{ doc('tpch_order_status') }}"
+        data_type: varchar
         
       - name: total_price
         description: "Importe total del pedido en la moneda local."
+        data_type: number
+
+    # 2. DEFINICIÓN DE VERSIONES
+    versions:
+      - v: 1
+        # La versión 1 es idéntica a la base, no hay que añadir absolutamente nada.
+        # Como no le hemos cambiado el nombre al archivo no hay que poner nigun alias aqui
+      - v: 2
+        columns:
+          # Coge todas las columnas base, pero excluye las que hemos borrado/renombrado
+          - include: all
+            exclude: [market_segment, status]
+            
+          # Añade la nueva columna (con sus propios tipos y tests si los tuviera)
+          - name: order_status_code
+            description: "Renombrado desde status."
+            data_type: varchar

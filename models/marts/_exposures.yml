@@ -1,0 +1,18 @@
+version: 2
+
+exposures:
+  - name: executive_sales_dashboard
+    label: "Executive Sales Dashboard"
+    type: dashboard
+    url: "https://tableau.tuempresa.com/views/ExecutiveSales"
+    description: "Dashboard diario utilizado por el C-Level para monitorizar los ingresos y el estado de los pedidos."
+    
+    # Aquí es donde ocurre la magia del linaje (DAG)
+    depends_on:
+      - ref('fct_orders')
+      - ref('dim_customers')
+      
+    # Metadatos para saber a quién gritarle si algo se rompe
+    owner:
+      name: "Equipo de BI / Data Analytics"
+      email: "caarlosmatac@gmail.com"

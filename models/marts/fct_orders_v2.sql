@@ -1,4 +1,3 @@
-
 {{
     config(
         materialized='incremental',
@@ -8,10 +7,7 @@
 with orders as (
     select * from {{ ref('stg_tpch_orders') }}
     
-    -- AQUÍ ESTÁ LA MAGIA INCREMENTAL
     {% if is_incremental() %}
-        -- Coge solo los pedidos cuya fecha sea mayor que la última fecha 
-        -- que ya tenemos insertada en esta misma tabla ( {{ this }} )
         where order_date >= (select max(order_date) from {{ this }})
     {% endif %}
 ),
@@ -25,9 +21,9 @@ final as (
         orders.order_id,
         orders.customer_id,
         customers.name as customer_name,
-        customers.market_segment,
+        -- Quitamos market_segment
         orders.order_date,
-        orders.status,
+        orders.status as order_status_code, -- Renombramos status
         orders.total_price
     from orders
     left join customers on orders.customer_id = customers.customer_id

@@ -3,6 +3,9 @@ version: 2
 models:
   - name: stg_tpch_customers
     description: "Tabla limpia de clientes"
+    config:
+      group: core_sales    # Asignamos el modelo a tu equipo
+      access: private      # CANDADO PUESTO. Solo tu equipo puede usarlo.
     columns:
       - name: customer_id
         description: "Clave primaria del cliente"
@@ -12,6 +15,9 @@ models:
 
   - name: stg_tpch_suppliers
     description: "Tabla limpia de proveedores"
+    config:
+      group: core_sales    # Asignamos el modelo a tu equipo
+      access: private      # CANDADO PUESTO. Solo tu equipo puede usarlo.
     columns:
       - name: supplier_id
         description: "Clave primaria del proveedor"
@@ -21,6 +27,9 @@ models:
 
   - name: stg_tpch_orders
     description: "Tabla limpia de pedidos"
+    config:
+      group: core_sales    # Asignamos el modelo a tu equipo
+      access: private      # CANDADO PUESTO. Solo tu equipo puede usarlo.
     columns:
       - name: order_id
         description: "Clave primaria del pedido"
