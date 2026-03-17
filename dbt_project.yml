@@ -45,6 +45,7 @@ models:
         not_null: 1
     marts:
       +materialized: table
+      +schema: marts
     staging:
       +materialized: view
     intermediate:
