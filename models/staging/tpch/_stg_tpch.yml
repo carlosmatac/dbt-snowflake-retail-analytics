@@ -34,7 +34,11 @@ models:
       - name: order_id
         description: "Clave primaria del pedido"
         data_tests:
-          - unique
+          - unique:
+              config:
+                severity: error  # Por defecto es error, pero lo hacemos explícito
+                warn_if: ">10"   # Si hay entre 11 y 100 duplicados, la terminal sale amarilla (Warning)
+                error_if: ">100" # Si hay más de 100 duplicados, la terminal sale roja
           - not_null
       
       - name: customer_id
@@ -46,6 +50,7 @@ models:
               arguments:
                 to: ref('stg_tpch_customers')
                 field: customer_id
+          
 
       - name: status
         description: "{{ doc('tpch_order_status') }}"
@@ -54,3 +59,15 @@ models:
           - accepted_values:
               arguments:
                 values: ['O', 'F', 'P']
+                config:
+                  limit: 10              # Si falla, que dbt solo procese los 10 primeros errores (ahorra dinero en Snowflake)
+                  store_failures: true
+      
+      - name: total_price # <-- AÑADES LA COLUMNA CRUDA
+        description: "Precio total del pedido."
+        data_tests:
+          - is_positive:    # <-- APLICAS TU TEST GENÉRICO AQUÍ
+              config:
+                # Solo queremos testear que el precio sea positivo si el pedido está Finalizado ('F')
+                # Ignoramos los pedidos Pendientes porque a lo mejor aún no se ha calculado su precio.
+                where: "status = 'F'"

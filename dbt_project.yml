@@ -38,8 +38,14 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   retail_insights:
     # Applies to all files under models/example/
+    # 1. Regla global: Todo modelo en este proyecto DEBE tener unique y not_null
+    +meta:
+      required_tests:
+        unique: 1
+        not_null: 1
     marts:
       +materialized: table
+      +schema: marts
     staging:
       +materialized: view
     intermediate:
