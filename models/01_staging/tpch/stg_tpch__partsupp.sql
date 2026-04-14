@@ -1,22 +1,20 @@
 {%- set yaml_metadata -%}
-source_model: 
-  tpch: 'orders'
+source_model:
+  tpch: 'partsupp'
 derived_columns:
-  RECORD_SOURCE: '!TPCH_SF1.ORDERS'
+  RECORD_SOURCE: '!TPCH_SF1.PARTSUPP'
   LOAD_DATETIME: 'CURRENT_TIMESTAMP()'
 hashed_columns:
-  ORDER_HK: 'O_ORDERKEY'
-  CUSTOMER_HK: 'O_CUSTKEY'
-  ORDER_CUSTOMER_HK:
-    - 'O_ORDERKEY'
-    - 'O_CUSTKEY'
-  ORDER_HASHDIFF:
+  PART_HK: 'PS_PARTKEY'
+  SUPPLIER_HK: 'PS_SUPPKEY'
+  PART_SUPPLIER_HK:
+    - 'PS_PARTKEY'
+    - 'PS_SUPPKEY'
+  PART_SUPPLIER_HASHDIFF:
     is_hashdiff: true
     columns:
-      - 'O_ORDERSTATUS'
-      - 'O_TOTALPRICE'
-      - 'O_ORDERPRIORITY'
-      - 'O_CLERK'
+      - 'PS_AVAILQTY'
+      - 'PS_SUPPLYCOST'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}

@@ -12,3 +12,4 @@ sources:
       - name: supplier
       - name: nation
       - name: region
+      - name: partsupp
