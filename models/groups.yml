@@ -1,6 +1,0 @@
-# groups.yml
-groups:
-  - name: core_sales
-    owner:
-      name: "Equipo Core de Ventas"
-      email: "core_sales@tuempresa.com"
