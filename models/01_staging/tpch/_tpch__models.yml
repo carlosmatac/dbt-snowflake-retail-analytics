@@ -38,3 +38,16 @@ models:
         tests:
           - unique
           - not_null
+
+  - name: stg_tpch__partsupp
+    columns:
+      - name: PART_SUPPLIER_HK
+        tests:
+          - unique
+          - not_null
+      - name: PS_PARTKEY
+        tests:
+          - not_null
+      - name: PS_SUPPKEY
+        tests:
+          - not_null

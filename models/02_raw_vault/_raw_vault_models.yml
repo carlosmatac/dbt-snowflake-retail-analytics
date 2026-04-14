@@ -1,0 +1,81 @@
+version: 2
+
+models:
+  - name: hub_nation
+    description: "Hub for nation reference data"
+    columns:
+      - name: NATION_HK
+        description: "Hash key for nation"
+        tests:
+          - unique
+          - not_null
+      - name: N_NATIONKEY
+        description: "Natural key from source"
+        tests:
+          - not_null
+
+  - name: hub_region
+    description: "Hub for region reference data"
+    columns:
+      - name: REGION_HK
+        description: "Hash key for region"
+        tests:
+          - unique
+          - not_null
+      - name: R_REGIONKEY
+        description: "Natural key from source"
+        tests:
+          - not_null
+
+  - name: link_order_customer
+    description: "Link between orders and customers"
+    columns:
+      - name: ORDER_CUSTOMER_HK
+        description: "Hash key for the link"
+        tests:
+          - unique
+          - not_null
+      - name: ORDER_HK
+        description: "FK to order hub"
+        tests:
+          - not_null
+      - name: CUSTOMER_HK
+        description: "FK to customer hub"
+        tests:
+          - not_null
+
+  - name: sat_order_customer
+    description: "Satellite for order-customer link"
+    columns:
+      - name: ORDER_CUSTOMER_HASHDIFF
+        description: "Hashdiff for payload"
+        tests:
+          - unique
+      - name: ORDER_CUSTOMER_HK
+        description: "Hash key for link"
+        tests:
+          - not_null
+
+  - name: sat_nation
+    description: "Satellite for nation attributes"
+    columns:
+      - name: NATION_HASHDIFF
+        description: "Hashdiff for nation payload"
+        tests:
+          - unique
+      - name: NATION_HK
+        description: "Hash key for nation"
+        tests:
+          - not_null
+
+  - name: sat_region
+    description: "Satellite for region attributes"
+    columns:
+      - name: REGION_HASHDIFF
+        description: "Hashdiff for region payload"
+        tests:
+          - unique
+      - name: REGION_HK
+        description: "Hash key for region"
+        tests:
+          - not_null
