@@ -36,18 +36,28 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 models:
-  retail_insights:
-    # Applies to all files under models/example/
-    # 1. Regla global: Todo modelo en este proyecto DEBE tener unique y not_null
-    +meta:
-      required_tests:
-        unique: 1
-        not_null: 1
-    marts:
+  my_project_name:
+    # Por defecto todo va a ANALYTICS.MARTS, pero lo sobreescribimos por carpeta:
+    +database: ANALYTICS
+    +schema: MARTS
+
+    01_staging:
+      +database: DATA_VAULT
+      +schema: STAGING
+      +materialized: view      # Staging suele ser vista para no duplicar datos
+
+    02_raw_vault:
+      +database: DATA_VAULT
+      +schema: RAW_VAULT
+      +materialized: incremental # ¡Importante! DV suele ser incremental
+
+    03_business_vault:
+      +database: DATA_VAULT
+      +schema: BUSINESS_VAULT
       +materialized: table
-      +schema: marts
-    staging:
-      +materialized: view
-    intermediate:
-      +materialized: view
+
+    04_marts:
+      +database: ANALYTICS
+      +schema: MARTS
+      +materialized: table
     
