@@ -2,14 +2,39 @@ version: 2
 
 models:
   - name: stg_tpch__customers
-    description: "Staging model for TPCH customers. Includes hash keys for Data Vault."
     columns:
-      - name: customer_hk
-        description: "Primary key (Hash Key) for the Customer Hub."
+      - name: CUSTOMER_HK
         tests:
           - unique
           - not_null
-      - name: customer_id
-        description: "Natural key for the customer."
+      - name: C_CUSTKEY
         tests:
+          - not_null
+
+  - name: stg_tpch__orders
+    columns:
+      - name: ORDER_HK
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_tpch__lineitem
+    columns:
+      - name: LINEITEM_HK
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_tpch__part
+    columns:
+      - name: PART_HK
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_tpch__supplier
+    columns:
+      - name: SUPPLIER_HK
+        tests:
+          - unique
           - not_null

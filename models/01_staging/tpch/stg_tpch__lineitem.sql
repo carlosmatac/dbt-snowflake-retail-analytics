@@ -1,21 +1,28 @@
--- models/01_staging/tpch/stg_tpch__customers.sql
-
 {%- set yaml_metadata -%}
 source_model: 
-  tpch: 'customer' 
+  tpch: 'lineitem'
 derived_columns:
-  RECORD_SOURCE: '!TPCH_SF1.CUSTOMER'
+  RECORD_SOURCE: '!TPCH_SF1.LINEITEM'
   LOAD_DATETIME: 'CURRENT_TIMESTAMP()'
 hashed_columns:
-  CUSTOMER_HK: 'C_CUSTKEY'
-  CUSTOMER_HASHDIFF:
+  LINEITEM_HK: 
+    - 'L_ORDERKEY'
+    - 'L_PARTKEY'
+    - 'L_SUPPKEY'
+    - 'L_LINENUMBER'
+  ORDER_HK: 'L_ORDERKEY'
+  PART_HK: 'L_PARTKEY'
+  SUPPLIER_HK: 'L_SUPPKEY'
+
+  LINEITEM_HASHDIFF:
     is_hashdiff: true
     columns:
-      - 'C_NAME'
-      - 'C_ADDRESS'
-      - 'C_PHONE'
-      - 'C_ACCTBAL'
-      - 'C_MKTSEGMENT'
+      - 'L_QUANTITY'
+      - 'L_EXTENDEDPRICE'
+      - 'L_DISCOUNT'
+      - 'L_TAX'
+      - 'L_RETURNFLAG'
+      - 'L_LINESTATUS'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}

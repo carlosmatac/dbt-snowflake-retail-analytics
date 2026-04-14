@@ -1,21 +1,21 @@
--- models/01_staging/tpch/stg_tpch__customers.sql
-
 {%- set yaml_metadata -%}
 source_model: 
-  tpch: 'customer' 
+  tpch: 'part'
 derived_columns:
-  RECORD_SOURCE: '!TPCH_SF1.CUSTOMER'
+  RECORD_SOURCE: '!TPCH_SF1.PART'
   LOAD_DATETIME: 'CURRENT_TIMESTAMP()'
 hashed_columns:
-  CUSTOMER_HK: 'C_CUSTKEY'
-  CUSTOMER_HASHDIFF:
+  PART_HK: 'P_PARTKEY'
+  PART_HASHDIFF:
     is_hashdiff: true
     columns:
-      - 'C_NAME'
-      - 'C_ADDRESS'
-      - 'C_PHONE'
-      - 'C_ACCTBAL'
-      - 'C_MKTSEGMENT'
+      - 'P_NAME'
+      - 'P_MFGR'
+      - 'P_BRAND'
+      - 'P_TYPE'
+      - 'P_SIZE'
+      - 'P_CONTAINER'
+      - 'P_RETAILPRICE'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}
