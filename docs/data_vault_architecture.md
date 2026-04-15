@@ -13,32 +13,32 @@ erDiagram
   %% ==================
   HUB_CUSTOMER {
     string CUSTOMER_HK PK
-    int C_CUSTKEY NK
+    int C_CUSTKEY "NK"
   }
 
   HUB_ORDER {
     string ORDER_HK PK
-    int O_ORDERKEY NK
+    int O_ORDERKEY "NK"
   }
 
   HUB_PART {
     string PART_HK PK
-    int P_PARTKEY NK
+    int P_PARTKEY "NK"
   }
 
   HUB_SUPPLIER {
     string SUPPLIER_HK PK
-    int S_SUPPKEY NK
+    int S_SUPPKEY "NK"
   }
 
   HUB_NATION {
     string NATION_HK PK
-    int N_NATIONKEY NK
+    int N_NATIONKEY "NK"
   }
 
   HUB_REGION {
     string REGION_HK PK
-    int R_REGIONKEY NK
+    int R_REGIONKEY "NK"
   }
 
   %% ==================
