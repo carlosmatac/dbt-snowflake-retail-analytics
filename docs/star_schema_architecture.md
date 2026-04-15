@@ -36,7 +36,7 @@ This document describes the target **Business Vault (views)** and **Marts (Star 
 
 ```mermaid
 flowchart LR
-  subgraph RAW_DV[Raw Data Vault]
+  subgraph "RAW_DV[Raw Data Vault]"
     H_CUST[(hub_customer)]
     S_CUST[(sat_customer)]
     H_SUPP[(hub_supplier)]
@@ -62,7 +62,7 @@ flowchart LR
     L_NR[(link_nation_region)]
   end
 
-  subgraph BV[Business Vault (views)]
+  subgraph "BV[Business Vault (views)]"
     BV_CUST[int_customer_current]
     BV_SUPP[int_supplier_current]
     BV_ORD[int_order_current]
@@ -71,7 +71,7 @@ flowchart LR
     BV_LI[int_lineitem_sales]
   end
 
-  subgraph MART[Marts (Star Schema)]
+  subgraph "MART[Marts (Star Schema)]"
     DIM_CUST[[dim_customers]]
     DIM_SUPP[[dim_supplier]]
     DIM_ORD[[dim_order]]
