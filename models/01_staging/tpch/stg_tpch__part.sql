@@ -16,6 +16,7 @@ hashed_columns:
       - 'P_SIZE'
       - 'P_CONTAINER'
       - 'P_RETAILPRICE'
+      - 'P_COMMENT'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}

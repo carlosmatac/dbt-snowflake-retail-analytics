@@ -1,0 +1,95 @@
+erDiagram
+    REGION ||--o{ NATION : "contains"
+    NATION ||--o{ CUSTOMER : "is home of"
+    NATION ||--o{ SUPPLIER : "is home of"
+    CUSTOMER ||--o{ ORDERS : "places"
+    ORDERS ||--o{ LINEITEM : "includes"
+    PART ||--o{ LINEITEM : "is sold in"
+    SUPPLIER ||--o{ LINEITEM : "ships"
+    PART ||--o{ PARTSUPP : "is supplied by"
+    SUPPLIER ||--o{ PARTSUPP : "supplies"
+
+    CUSTOMER {
+        int C_CUSTKEY PK
+        string C_NAME
+        string C_ADDRESS
+        int C_NATIONKEY FK
+        string C_PHONE
+        float C_ACCTBAL
+        string C_MKTSEGMENT
+        string C_COMMENT
+    }
+
+    LINEITEM {
+        int L_ORDERKEY FK
+        int L_PARTKEY FK
+        int L_SUPPKEY FK
+        int L_LINENUMBER PK
+        float L_QUANTITY
+        float L_EXTENDEDPRICE
+        float L_DISCOUNT
+        float L_TAX
+        string L_RETURNFLAG
+        string L_LINESTATUS
+        date L_SHIPDATE
+        date L_COMMITDATE
+        date L_RECEIPTDATE
+        string L_SHIPINSTRUCT
+        string L_SHIPMODE
+        string L_COMMENT
+    }
+
+    NATION {
+        int N_NATIONKEY PK
+        string N_NAME
+        int N_REGIONKEY FK
+        string N_COMMENT
+    }
+
+    ORDERS {
+        int O_ORDERKEY PK
+        int O_CUSTKEY FK
+        string O_ORDERSTATUS
+        float O_TOTALPRICE
+        date O_ORDERDATE
+        string O_ORDERPRIORITY
+        string O_CLERK
+        int O_SHIPPRIORITY
+        string O_COMMENT
+    }
+
+    PART {
+        int P_PARTKEY PK
+        string P_NAME
+        string P_MFGR
+        string P_BRAND
+        string P_TYPE
+        int P_SIZE
+        string P_CONTAINER
+        float P_RETAILPRICE
+        string P_COMMENT
+    }
+
+    PARTSUPP {
+        int PS_PARTKEY PK
+        int PS_SUPPKEY PK
+        int PS_AVAILQTY
+        float PS_SUPPLYCOST
+        string PS_COMMENT
+    }
+
+    REGION {
+        int R_REGIONKEY PK
+        string R_NAME
+        string R_COMMENT
+    }
+
+    SUPPLIER {
+        int S_SUPPKEY PK
+        string S_NAME
+        string S_ADDRESS
+        int S_NATIONKEY FK
+        string S_PHONE
+        float S_ACCTBAL
+        string S_COMMENT
+    }

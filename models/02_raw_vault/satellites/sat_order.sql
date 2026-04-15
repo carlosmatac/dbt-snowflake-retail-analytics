@@ -3,7 +3,7 @@
 {%- set source_model = "stg_tpch__orders" -%}
 {%- set src_pk = "ORDER_HK" -%}
 {%- set src_hashdiff = "ORDER_HASHDIFF" -%}
-{%- set src_payload = ["O_ORDERSTATUS", "O_TOTALPRICE", "O_ORDERPRIORITY", "O_CLERK"] -%}
+{%- set src_payload = ["O_ORDERSTATUS", "O_TOTALPRICE", "O_ORDERPRIORITY", "O_CLERK", "O_ORDERDATE", "O_SHIPPRIORITY", "O_COMMENT"] -%}
 {%- set src_ldts = "LOAD_DATETIME" -%}
 {%- set src_source = "RECORD_SOURCE" -%}
 

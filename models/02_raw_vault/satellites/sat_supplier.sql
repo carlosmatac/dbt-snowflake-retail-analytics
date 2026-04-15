@@ -3,7 +3,7 @@
 {%- set source_model = "stg_tpch__supplier" -%}
 {%- set src_pk = "SUPPLIER_HK" -%}
 {%- set src_hashdiff = "SUPPLIER_HASHDIFF" -%}
-{%- set src_payload = ["S_NAME", "S_ADDRESS", "S_PHONE", "S_ACCTBAL"] -%}
+{%- set src_payload = ["S_NAME", "S_ADDRESS", "S_PHONE", "S_ACCTBAL", "S_COMMENT"] -%}
 {%- set src_ldts = "LOAD_DATETIME" -%}
 {%- set src_source = "RECORD_SOURCE" -%}
 

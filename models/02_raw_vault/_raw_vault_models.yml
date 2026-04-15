@@ -134,6 +134,57 @@ models:
         tests:
           - not_null
 
+  - name: link_customer_nation
+    description: "Link between customers and nations (C_NATIONKEY)."
+    columns:
+      - name: CUSTOMER_NATION_HK
+        description: "Hash key for the customer-nation link."
+        tests:
+          - unique
+          - not_null
+      - name: CUSTOMER_HK
+        description: "FK to customer hub."
+        tests:
+          - not_null
+      - name: NATION_HK
+        description: "FK to nation hub."
+        tests:
+          - not_null
+
+  - name: link_supplier_nation
+    description: "Link between suppliers and nations (S_NATIONKEY)."
+    columns:
+      - name: SUPPLIER_NATION_HK
+        description: "Hash key for the supplier-nation link."
+        tests:
+          - unique
+          - not_null
+      - name: SUPPLIER_HK
+        description: "FK to supplier hub."
+        tests:
+          - not_null
+      - name: NATION_HK
+        description: "FK to nation hub."
+        tests:
+          - not_null
+
+  - name: link_nation_region
+    description: "Link between nations and regions (N_REGIONKEY)."
+    columns:
+      - name: NATION_REGION_HK
+        description: "Hash key for the nation-region link."
+        tests:
+          - unique
+          - not_null
+      - name: NATION_HK
+        description: "FK to nation hub."
+        tests:
+          - not_null
+      - name: REGION_HK
+        description: "FK to region hub."
+        tests:
+          - not_null
+
   - name: sat_customer
     description: "Customer satellite with descriptive attributes."
     columns:

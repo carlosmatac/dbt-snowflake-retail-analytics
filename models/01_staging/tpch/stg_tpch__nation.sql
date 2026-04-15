@@ -6,11 +6,16 @@ derived_columns:
   LOAD_DATETIME: 'CURRENT_TIMESTAMP()'
 hashed_columns:
   NATION_HK: 'N_NATIONKEY'
+  REGION_HK: 'N_REGIONKEY'
+  NATION_REGION_HK:
+    - 'N_NATIONKEY'
+    - 'N_REGIONKEY'
   NATION_HASHDIFF:
     is_hashdiff: true
     columns:
       - 'N_NAME'
       - 'N_REGIONKEY'
+      - 'N_COMMENT'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}

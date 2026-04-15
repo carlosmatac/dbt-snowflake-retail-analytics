@@ -10,6 +10,7 @@ hashed_columns:
     is_hashdiff: true
     columns:
       - 'R_NAME'
+      - 'R_COMMENT'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}
