@@ -1,5 +1,5 @@
 {%- set yaml_metadata -%}
-source_model: 
+source_model:
   tpch: 'orders'
 derived_columns:
   RECORD_SOURCE: '!TPCH_SF1.ORDERS'
@@ -20,8 +20,11 @@ hashed_columns:
     columns:
       - 'O_ORDERSTATUS'
       - 'O_TOTALPRICE'
+      - 'O_ORDERDATE'
       - 'O_ORDERPRIORITY'
       - 'O_CLERK'
+      - 'O_SHIPPRIORITY'
+      - 'O_COMMENT'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}

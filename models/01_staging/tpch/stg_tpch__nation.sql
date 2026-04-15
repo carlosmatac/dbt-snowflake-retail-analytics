@@ -11,6 +11,7 @@ hashed_columns:
     columns:
       - 'N_NAME'
       - 'N_REGIONKEY'
+      - 'N_COMMENT'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}

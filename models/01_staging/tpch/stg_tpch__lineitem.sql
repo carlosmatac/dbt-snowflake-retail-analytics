@@ -23,6 +23,12 @@ hashed_columns:
       - 'L_TAX'
       - 'L_RETURNFLAG'
       - 'L_LINESTATUS'
+      - 'L_SHIPDATE'
+      - 'L_COMMITDATE'
+      - 'L_RECEIPTDATE'
+      - 'L_SHIPINSTRUCT'
+      - 'L_SHIPMODE'
+      - 'L_COMMENT'
 {%- endset -%}
 
 {% set metadata = fromyaml(yaml_metadata) %}
