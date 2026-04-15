@@ -6,6 +6,108 @@ Este documento representa el **Raw Vault** del proyecto (Hubs, Links y Satellite
 
 ## Raw Vault ER diagram
 
+## Raw Vault (solo Hubs + Links)
+
+```mermaid
+erDiagram
+  %% ==================
+  %% HUBS
+  %% ==================
+  HUB_CUSTOMER {
+    string CUSTOMER_HK PK
+    int C_CUSTKEY "NK"
+  }
+
+  HUB_ORDER {
+    string ORDER_HK PK
+    int O_ORDERKEY "NK"
+  }
+
+  HUB_PART {
+    string PART_HK PK
+    int P_PARTKEY "NK"
+  }
+
+  HUB_SUPPLIER {
+    string SUPPLIER_HK PK
+    int S_SUPPKEY "NK"
+  }
+
+  HUB_NATION {
+    string NATION_HK PK
+    int N_NATIONKEY "NK"
+  }
+
+  HUB_REGION {
+    string REGION_HK PK
+    int R_REGIONKEY "NK"
+  }
+
+  %% ==================
+  %% LINKS
+  %% ==================
+  LINK_ORDER_CUSTOMER {
+    string ORDER_CUSTOMER_HK PK
+    string ORDER_HK FK
+    string CUSTOMER_HK FK
+  }
+
+  LINK_LINEITEM {
+    string LINEITEM_HK PK
+    string ORDER_HK FK
+    string PART_HK FK
+    string SUPPLIER_HK FK
+  }
+
+  LINK_PART_SUPPLIER {
+    string PART_SUPPLIER_HK PK
+    string PART_HK FK
+    string SUPPLIER_HK FK
+  }
+
+  LINK_CUSTOMER_NATION {
+    string CUSTOMER_NATION_HK PK
+    string CUSTOMER_HK FK
+    string NATION_HK FK
+  }
+
+  LINK_SUPPLIER_NATION {
+    string SUPPLIER_NATION_HK PK
+    string SUPPLIER_HK FK
+    string NATION_HK FK
+  }
+
+  LINK_NATION_REGION {
+    string NATION_REGION_HK PK
+    string NATION_HK FK
+    string REGION_HK FK
+  }
+
+  %% ==================
+  %% RELATIONSHIPS
+  %% ==================
+  HUB_ORDER ||--o{ LINK_ORDER_CUSTOMER : relates
+  HUB_CUSTOMER ||--o{ LINK_ORDER_CUSTOMER : relates
+
+  HUB_ORDER ||--o{ LINK_LINEITEM : relates
+  HUB_PART ||--o{ LINK_LINEITEM : relates
+  HUB_SUPPLIER ||--o{ LINK_LINEITEM : relates
+
+  HUB_PART ||--o{ LINK_PART_SUPPLIER : relates
+  HUB_SUPPLIER ||--o{ LINK_PART_SUPPLIER : relates
+
+  HUB_CUSTOMER ||--o{ LINK_CUSTOMER_NATION : relates
+  HUB_NATION ||--o{ LINK_CUSTOMER_NATION : relates
+
+  HUB_SUPPLIER ||--o{ LINK_SUPPLIER_NATION : relates
+  HUB_NATION ||--o{ LINK_SUPPLIER_NATION : relates
+
+  HUB_NATION ||--o{ LINK_NATION_REGION : relates
+  HUB_REGION ||--o{ LINK_NATION_REGION : relates
+```
+
+## Raw Vault ER diagram
+
 ```mermaid
 erDiagram
   %% ==================
