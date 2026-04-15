@@ -144,7 +144,17 @@ models:
       - name: CUSTOMER_HASHDIFF
         description: "Hashdiff for customer payload."
         tests:
-          - unique
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - CUSTOMER_HK
+            - CUSTOMER_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - CUSTOMER_HK
+            - LOAD_DATETIME
 
   - name: sat_order
     description: "Order satellite with descriptive attributes."
@@ -156,7 +166,17 @@ models:
       - name: ORDER_HASHDIFF
         description: "Hashdiff for order payload."
         tests:
-          - unique
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ORDER_HK
+            - ORDER_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ORDER_HK
+            - LOAD_DATETIME
 
   - name: sat_lineitem
     description: "Lineitem satellite with descriptive attributes."
@@ -168,7 +188,17 @@ models:
       - name: LINEITEM_HASHDIFF
         description: "Hashdiff for lineitem payload."
         tests:
-          - unique
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - LINEITEM_HK
+            - LINEITEM_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - LINEITEM_HK
+            - LOAD_DATETIME
 
   - name: sat_part
     description: "Part satellite with descriptive attributes."
@@ -180,7 +210,17 @@ models:
       - name: PART_HASHDIFF
         description: "Hashdiff for part payload."
         tests:
-          - unique
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - PART_HK
+            - PART_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - PART_HK
+            - LOAD_DATETIME
 
   - name: sat_supplier
     description: "Supplier satellite with descriptive attributes."
@@ -192,7 +232,17 @@ models:
       - name: SUPPLIER_HASHDIFF
         description: "Hashdiff for supplier payload."
         tests:
-          - unique
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - SUPPLIER_HK
+            - SUPPLIER_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - SUPPLIER_HK
+            - LOAD_DATETIME
 
   - name: sat_part_supplier
     description: "Satellite for part-supplier link attributes (partsupp)."
@@ -204,7 +254,17 @@ models:
       - name: PART_SUPPLIER_HASHDIFF
         description: "Hashdiff for part-supplier payload."
         tests:
-          - unique
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - PART_SUPPLIER_HK
+            - PART_SUPPLIER_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - PART_SUPPLIER_HK
+            - LOAD_DATETIME
 
   - name: sat_order_customer
     description: "Satellite for order-customer link"
@@ -212,11 +272,21 @@ models:
       - name: ORDER_CUSTOMER_HASHDIFF
         description: "Hashdiff for payload"
         tests:
-          - unique
+          - not_null
       - name: ORDER_CUSTOMER_HK
         description: "Hash key for link"
         tests:
           - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ORDER_CUSTOMER_HK
+            - ORDER_CUSTOMER_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - ORDER_CUSTOMER_HK
+            - LOAD_DATETIME
 
   - name: sat_nation
     description: "Satellite for nation attributes"
@@ -224,20 +294,41 @@ models:
       - name: NATION_HASHDIFF
         description: "Hashdiff for nation payload"
         tests:
-          - unique
+          - not_null
       - name: NATION_HK
         description: "Hash key for nation"
         tests:
           - not_null
 
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - NATION_HK
+            - NATION_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - NATION_HK
+            - LOAD_DATETIME
+
   - name: sat_region
     description: "Satellite for region attributes"
     columns:
-      - name: REGION_HASHDIFF
-        description: "Hashdiff for region payload"
-        tests:
-          - unique
       - name: REGION_HK
         description: "Hash key for region"
         tests:
           - not_null
+
+      - name: REGION_HASHDIFF
+        description: "Hashdiff for region payload."
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - REGION_HK
+            - REGION_HASHDIFF
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - REGION_HK
+            - LOAD_DATETIME
