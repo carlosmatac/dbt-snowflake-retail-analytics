@@ -7,6 +7,13 @@ models:
         tests:
           - unique
           - not_null
+      - name: CUSTOMER_NATION_HK
+        tests:
+          - unique
+          - not_null
+      - name: NATION_HK
+        tests:
+          - not_null
       - name: C_CUSTKEY
         tests:
           - not_null
@@ -35,6 +42,27 @@ models:
   - name: stg_tpch__supplier
     columns:
       - name: SUPPLIER_HK
+        tests:
+          - unique
+          - not_null
+      - name: SUPPLIER_NATION_HK
+        tests:
+          - unique
+          - not_null
+      - name: NATION_HK
+        tests:
+          - not_null
+
+  - name: stg_tpch__nation
+    columns:
+      - name: NATION_HK
+        tests:
+          - unique
+          - not_null
+      - name: REGION_HK
+        tests:
+          - not_null
+      - name: NATION_REGION_HK
         tests:
           - unique
           - not_null

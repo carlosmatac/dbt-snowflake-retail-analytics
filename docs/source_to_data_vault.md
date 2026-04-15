@@ -19,14 +19,14 @@ Este documento describe las entidades **Data Vault** implementadas/detectadas a 
 
 | Link (DV) | Modelo raw vault | Relación / Tabla source | FKs en source | FKs (HKs) en staging | Link HK en staging |
 |---|---|---|---|---|---|
+| Customer–Nation | `link_customer_nation` | `CUSTOMER` | `C_CUSTKEY`, `C_NATIONKEY` | `CUSTOMER_HK`, `NATION_HK` | `CUSTOMER_NATION_HK` |
 | Order–Customer | `link_order_customer` | `ORDERS` | `O_ORDERKEY`, `O_CUSTKEY` | `ORDER_HK`, `CUSTOMER_HK` | `ORDER_CUSTOMER_HK` |
 | Part–Supplier | `link_part_supplier` | `PARTSUPP` | `PS_PARTKEY`, `PS_SUPPKEY` | `PART_HK`, `SUPPLIER_HK` | `PART_SUPPLIER_HK` |
 | Lineitem (Order–Part–Supplier) | `link_lineitem` | `LINEITEM` | `L_ORDERKEY`, `L_PARTKEY`, `L_SUPPKEY`, `L_LINENUMBER` | `ORDER_HK`, `PART_HK`, `SUPPLIER_HK` | `LINEITEM_HK` |
+| Supplier–Nation | `link_supplier_nation` | `SUPPLIER` | `S_SUPPKEY`, `S_NATIONKEY` | `SUPPLIER_HK`, `NATION_HK` | `SUPPLIER_NATION_HK` |
+| Nation–Region | `link_nation_region` | `NATION` | `N_NATIONKEY`, `N_REGIONKEY` | `NATION_HK`, `REGION_HK` | `NATION_REGION_HK` |
 
 > Relaciones adicionales posibles (no implementadas como links explícitos hoy):
-> - Customer–Nation (`CUSTOMER.C_NATIONKEY`)
-> - Supplier–Nation (`SUPPLIER.S_NATIONKEY`)
-> - Nation–Region (`NATION.N_REGIONKEY`)
 >
 > Estas relaciones pueden modelarse como links o mantenerse como atributos en satélites (decisión de diseño).
 

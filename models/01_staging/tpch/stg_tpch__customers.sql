@@ -8,6 +8,10 @@ derived_columns:
   LOAD_DATETIME: 'CURRENT_TIMESTAMP()'
 hashed_columns:
   CUSTOMER_HK: 'C_CUSTKEY'
+  NATION_HK: 'C_NATIONKEY'
+  CUSTOMER_NATION_HK:
+    - 'C_CUSTKEY'
+    - 'C_NATIONKEY'
   CUSTOMER_HASHDIFF:
     is_hashdiff: true
     columns:
