@@ -1,6 +1,58 @@
 version: 2
 
 models:
+  - name: hub_customer
+    description: "Customer hub (TPCH customer)."
+    columns:
+      - name: CUSTOMER_HK
+        description: "Hash key for customer hub."
+        tests:
+          - unique
+          - not_null
+      - name: C_CUSTKEY
+        description: "Customer natural key from source."
+        tests:
+          - not_null
+
+  - name: hub_order
+    description: "Order hub (TPCH orders)."
+    columns:
+      - name: ORDER_HK
+        description: "Hash key for order hub."
+        tests:
+          - unique
+          - not_null
+      - name: O_ORDERKEY
+        description: "Order natural key from source."
+        tests:
+          - not_null
+
+  - name: hub_part
+    description: "Part hub (TPCH part)."
+    columns:
+      - name: PART_HK
+        description: "Hash key for part hub."
+        tests:
+          - unique
+          - not_null
+      - name: P_PARTKEY
+        description: "Part natural key from source."
+        tests:
+          - not_null
+
+  - name: hub_supplier
+    description: "Supplier hub (TPCH supplier)."
+    columns:
+      - name: SUPPLIER_HK
+        description: "Hash key for supplier hub."
+        tests:
+          - unique
+          - not_null
+      - name: S_SUPPKEY
+        description: "Supplier natural key from source."
+        tests:
+          - not_null
+
   - name: hub_nation
     description: "Hub for nation reference data"
     columns:
@@ -27,6 +79,27 @@ models:
         tests:
           - not_null
 
+  - name: link_lineitem
+    description: "Link for lineitems, connecting order, part, and supplier."
+    columns:
+      - name: LINEITEM_HK
+        description: "Hash key for lineitem link."
+        tests:
+          - unique
+          - not_null
+      - name: ORDER_HK
+        description: "FK to order hub."
+        tests:
+          - not_null
+      - name: PART_HK
+        description: "FK to part hub."
+        tests:
+          - not_null
+      - name: SUPPLIER_HK
+        description: "FK to supplier hub."
+        tests:
+          - not_null
+
   - name: link_order_customer
     description: "Link between orders and customers"
     columns:
@@ -43,6 +116,95 @@ models:
         description: "FK to customer hub"
         tests:
           - not_null
+
+  - name: link_part_supplier
+    description: "Link between parts and suppliers (partsupp)."
+    columns:
+      - name: PART_SUPPLIER_HK
+        description: "Hash key for part-supplier link."
+        tests:
+          - unique
+          - not_null
+      - name: PART_HK
+        description: "FK to part hub."
+        tests:
+          - not_null
+      - name: SUPPLIER_HK
+        description: "FK to supplier hub."
+        tests:
+          - not_null
+
+  - name: sat_customer
+    description: "Customer satellite with descriptive attributes."
+    columns:
+      - name: CUSTOMER_HK
+        description: "Hash key for customer."
+        tests:
+          - not_null
+      - name: CUSTOMER_HASHDIFF
+        description: "Hashdiff for customer payload."
+        tests:
+          - unique
+
+  - name: sat_order
+    description: "Order satellite with descriptive attributes."
+    columns:
+      - name: ORDER_HK
+        description: "Hash key for order."
+        tests:
+          - not_null
+      - name: ORDER_HASHDIFF
+        description: "Hashdiff for order payload."
+        tests:
+          - unique
+
+  - name: sat_lineitem
+    description: "Lineitem satellite with descriptive attributes."
+    columns:
+      - name: LINEITEM_HK
+        description: "Hash key for lineitem."
+        tests:
+          - not_null
+      - name: LINEITEM_HASHDIFF
+        description: "Hashdiff for lineitem payload."
+        tests:
+          - unique
+
+  - name: sat_part
+    description: "Part satellite with descriptive attributes."
+    columns:
+      - name: PART_HK
+        description: "Hash key for part."
+        tests:
+          - not_null
+      - name: PART_HASHDIFF
+        description: "Hashdiff for part payload."
+        tests:
+          - unique
+
+  - name: sat_supplier
+    description: "Supplier satellite with descriptive attributes."
+    columns:
+      - name: SUPPLIER_HK
+        description: "Hash key for supplier."
+        tests:
+          - not_null
+      - name: SUPPLIER_HASHDIFF
+        description: "Hashdiff for supplier payload."
+        tests:
+          - unique
+
+  - name: sat_part_supplier
+    description: "Satellite for part-supplier link attributes (partsupp)."
+    columns:
+      - name: PART_SUPPLIER_HK
+        description: "Hash key for part-supplier link."
+        tests:
+          - not_null
+      - name: PART_SUPPLIER_HASHDIFF
+        description: "Hashdiff for part-supplier payload."
+        tests:
+          - unique
 
   - name: sat_order_customer
     description: "Satellite for order-customer link"

@@ -10,6 +10,11 @@ hashed_columns:
   ORDER_CUSTOMER_HK:
     - 'O_ORDERKEY'
     - 'O_CUSTKEY'
+  ORDER_CUSTOMER_HASHDIFF:
+    is_hashdiff: true
+    columns:
+      - 'O_ORDERKEY'
+      - 'O_CUSTKEY'
   ORDER_HASHDIFF:
     is_hashdiff: true
     columns:

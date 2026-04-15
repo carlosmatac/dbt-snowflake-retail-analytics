@@ -1,18 +1,65 @@
-# 🛒 Retail Insights - dbt Snowflake Project
+# 🧱 dbt Snowflake Retail Analytics (TPCH) — Data Vault + Star Schema
 
-Este proyecto utiliza **dbt Core / Cloud** para transformar datos brutos de ventas en un modelo analítico listo para ser consumido por herramientas de BI.
+Proyecto dbt sobre Snowflake usando el dataset de ejemplo **TPCH** (`SNOWFLAKE_SAMPLE_DATA.TPCH_SF1`).
 
-## 🏗️ Arquitectura
-* **Data Warehouse:** Snowflake
-* **Dataset Crudo:** `SNOWFLAKE_SAMPLE_DATA.TPCH_SF1`
-* **Orquestación y Transformación:** dbt
+El modelado se implementa en 2 pasos:
+1. **Data Vault (Raw Vault)** para historificación y trazabilidad.
+2. **Star Schema (Marts)** como capa de consumo (pendiente / en progreso).
 
-## 📂 Estructura del Proyecto
-El proyecto sigue las mejores prácticas de modularidad de dbt:
-1. **Staging (`models/staging/`):** Vistas 1:1 con las fuentes originales, dedicadas a la limpieza de nombres, casteo de tipos de datos y estandarización.
-2. **Marts (`models/marts/`):** Modelos de negocio donde se cruzan las entidades (Joins) y se aplican agregaciones para el usuario final.
+## 🏗️ Stack
 
-## 🚀 Cómo empezar (Desarrollo local)
-1. Asegúrate de tener configurado tu `profiles.yml` apuntando a tu base de datos de desarrollo en Snowflake.
-2. Ejecuta `dbt deps` para instalar dependencias (si aplica).
-3. Ejecuta `dbt build` para correr modelos y tests.
+- Warehouse: **Snowflake**
+- Dataset: `SNOWFLAKE_SAMPLE_DATA.TPCH_SF1`
+- Framework: **dbt**
+- Librería Data Vault: **Datavault-UK/automate_dv**
+
+## � Estructura del repo
+
+La estructura real del proyecto está organizada por capas (ver `dbt_project.yml`):
+
+- `models/01_staging/`
+	- Staging 1:1 desde fuentes (normalización, derived columns, hashed columns).
+	- Implementado con `automate_dv.stage()`.
+
+- `models/02_raw_vault/`
+	- Raw Vault con **Hubs**, **Links** y **Satellites**.
+	- Implementado con `automate_dv.hub()`, `automate_dv.link()`, `automate_dv.sat()`.
+
+- `models/04_marts/` (planificado)
+	- Modelo estrella (dims/facts) para consumo analítico.
+
+## ✅ Convenciones (resumen)
+
+- Columnas técnicas en staging:
+	- `LOAD_DATETIME`: timestamp de carga.
+	- `RECORD_SOURCE`: identificador del origen.
+- Claves:
+	- `*_HK`: hash key (hub/link).
+	- `*_HASHDIFF`: hashdiff para satélites.
+
+## 🚀 Ejecución (local / CI)
+
+1. Configura tu conexión en `profiles.yml` apuntando a Snowflake.
+2. Instala dependencias:
+
+```powershell
+dbt deps
+```
+
+3. Compila (recomendado):
+
+```powershell
+dbt compile
+```
+
+4. Ejecuta modelos y tests:
+
+```powershell
+dbt run
+dbt test
+```
+
+## 🔎 Calidad de datos
+
+- Tests de staging: `models/01_staging/tpch/_tpch__models.yml`
+- Tests/documentación del raw vault: `models/02_raw_vault/_raw_vault_models.yml`
