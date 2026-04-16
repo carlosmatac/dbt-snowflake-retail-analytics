@@ -10,7 +10,7 @@ with customer_latest as (
         s.C_PHONE as phone,
         s.C_ACCTBAL as account_balance,
         s.C_MKTSEGMENT as market_segment,
-        s.C_NATIONKEY as nation_id,
+        c.C_NATIONKEY as nation_id,
         s.C_COMMENT as comment,
         s.LOAD_DATETIME as load_datetime,
         s.RECORD_SOURCE as record_source,

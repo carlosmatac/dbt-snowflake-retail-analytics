@@ -3,9 +3,9 @@
 
 with date_spine as (
     select * from {{ dbt_utils.date_spine(
-        start_date="cast('1990-01-01' as date)",
-        end_date="cast('2030-12-31' as date)",
-        datepart="day"
+        start_date = "'1990-01-01'",
+        end_date = "'2030-12-31'",
+        datepart = 'day'
     ) }}
 )
 select

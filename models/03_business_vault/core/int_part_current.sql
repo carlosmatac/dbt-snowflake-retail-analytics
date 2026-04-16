@@ -11,7 +11,6 @@ with part_latest as (
         s.P_SIZE as size,
         s.P_CONTAINER as container,
         s.P_RETAILPRICE as retail_price,
-        s.P_COMMENT as comment,
         s.LOAD_DATETIME as load_datetime,
         s.RECORD_SOURCE as record_source,
         row_number() over (partition by p.PART_HK order by s.LOAD_DATETIME desc) as rn
