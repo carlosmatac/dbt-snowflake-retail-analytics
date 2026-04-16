@@ -1,0 +1,187 @@
+version: 2
+
+models:
+  - name: int_customer_current
+    description: "Current state of customers, flattened and business-friendly."
+    columns:
+      - name: customer_hk
+        description: "Surrogate key (hash) for customer."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Business key from source (C_CUSTKEY)."
+        data_tests:
+          - not_null
+      - name: customer_name
+        description: "Customer name."
+      - name: address
+        description: "Customer address."
+      - name: phone
+        description: "Customer phone."
+      - name: account_balance
+        description: "Account balance."
+      - name: market_segment
+        description: "Market segment."
+      - name: nation_name
+        description: "Nation name."
+      - name: region_name
+        description: "Region name."
+      - name: load_datetime
+        description: "Load timestamp."
+      - name: record_source
+        description: "Record source."
+
+  - name: int_supplier_current
+    description: "Current state of suppliers, flattened and business-friendly."
+    columns:
+      - name: supplier_hk
+        description: "Surrogate key (hash) for supplier."
+        data_tests:
+          - unique
+          - not_null
+      - name: supplier_id
+        description: "Business key from source (S_SUPPKEY)."
+        data_tests:
+          - not_null
+      - name: supplier_name
+        description: "Supplier name."
+      - name: address
+        description: "Supplier address."
+      - name: phone
+        description: "Supplier phone."
+      - name: account_balance
+        description: "Account balance."
+      - name: nation_name
+        description: "Nation name."
+      - name: region_name
+        description: "Region name."
+      - name: load_datetime
+        description: "Load timestamp."
+      - name: record_source
+        description: "Record source."
+
+  - name: int_order_current
+    description: "Current state of orders, flattened and business-friendly."
+    columns:
+      - name: order_hk
+        description: "Surrogate key (hash) for order."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: "Business key from source (O_ORDERKEY)."
+        data_tests:
+          - not_null
+      - name: order_status
+        description: "Order status."
+      - name: order_priority
+        description: "Order priority."
+      - name: clerk_name
+        description: "Clerk name."
+      - name: order_date
+        description: "Order date."
+      - name: load_datetime
+        description: "Load timestamp."
+      - name: record_source
+        description: "Record source."
+
+  - name: int_part_current
+    description: "Current state of parts, flattened and business-friendly."
+    columns:
+      - name: part_hk
+        description: "Surrogate key (hash) for part."
+        data_tests:
+          - unique
+          - not_null
+      - name: part_id
+        description: "Business key from source (P_PARTKEY)."
+        data_tests:
+          - not_null
+      - name: part_name
+        description: "Part name."
+      - name: brand
+        description: "Brand."
+      - name: type
+        description: "Type."
+      - name: size
+        description: "Size."
+      - name: load_datetime
+        description: "Load timestamp."
+      - name: record_source
+        description: "Record source."
+
+  - name: int_location_current
+    description: "Current state of locations (nation + region)."
+    columns:
+      - name: nation_hk
+        description: "Surrogate key (hash) for nation."
+        data_tests:
+          - not_null
+      - name: nation_id
+        description: "Business key from source (N_NATIONKEY)."
+        data_tests:
+          - not_null
+      - name: nation_name
+        description: "Nation name."
+      - name: region_hk
+        description: "Surrogate key (hash) for region."
+        data_tests:
+          - not_null
+      - name: region_id
+        description: "Business key from source (R_REGIONKEY)."
+        data_tests:
+          - not_null
+      - name: region_name
+        description: "Region name."
+      - name: nation_load_datetime
+        description: "Nation load timestamp."
+      - name: region_load_datetime
+        description: "Region load timestamp."
+
+  - name: int_lineitem_sales
+    description: "Current state of sales at lineitem grain, business-friendly."
+    columns:
+      - name: lineitem_hk
+        description: "Surrogate key (hash) for lineitem."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_hk
+        description: "Order hash key."
+        data_tests:
+          - not_null
+      - name: customer_hk
+        description: "Customer hash key."
+        data_tests:
+          - not_null
+      - name: part_hk
+        description: "Part hash key."
+        data_tests:
+          - not_null
+      - name: supplier_hk
+        description: "Supplier hash key."
+        data_tests:
+          - not_null
+      - name: order_date
+        description: "Order date."
+      - name: ship_date
+        description: "Ship date."
+      - name: receipt_date
+        description: "Receipt date."
+      - name: quantity
+        description: "Quantity."
+      - name: extended_price
+        description: "Extended price."
+      - name: discount_percentage
+        description: "Discount percentage."
+      - name: tax_percentage
+        description: "Tax percentage."
+      - name: item_total_price
+        description: "Item total price (quantity * extended_price)."
+      - name: net_revenue
+        description: "Net revenue (item_total_price * (1 - discount_percentage))."
+      - name: load_datetime
+        description: "Load timestamp."
+      - name: record_source
+        description: "Record source."

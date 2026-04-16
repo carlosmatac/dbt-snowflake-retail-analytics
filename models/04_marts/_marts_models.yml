@@ -1,0 +1,172 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Customer dimension (current state, business-friendly)."
+    columns:
+      - name: customer_hk
+        description: "Surrogate key (hash) for customer."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Business key from source (C_CUSTKEY)."
+        data_tests:
+          - not_null
+      - name: customer_name
+        description: "Customer name."
+      - name: market_segment
+        description: "Market segment."
+      - name: nation_name
+        description: "Nation name."
+      - name: region_name
+        description: "Region name."
+
+  - name: dim_supplier
+    description: "Supplier dimension (current state, business-friendly)."
+    columns:
+      - name: supplier_hk
+        description: "Surrogate key (hash) for supplier."
+        data_tests:
+          - unique
+          - not_null
+      - name: supplier_id
+        description: "Business key from source (S_SUPPKEY)."
+        data_tests:
+          - not_null
+      - name: supplier_name
+        description: "Supplier name."
+      - name: nation_name
+        description: "Nation name."
+      - name: region_name
+        description: "Region name."
+
+  - name: dim_order
+    description: "Order dimension (current state, business-friendly)."
+    columns:
+      - name: order_hk
+        description: "Surrogate key (hash) for order."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: "Business key from source (O_ORDERKEY)."
+        data_tests:
+          - not_null
+      - name: order_status
+        description: "Order status."
+      - name: order_priority
+        description: "Order priority."
+      - name: clerk_name
+        description: "Clerk name."
+
+  - name: dim_part
+    description: "Part dimension (current state, business-friendly)."
+    columns:
+      - name: part_hk
+        description: "Surrogate key (hash) for part."
+        data_tests:
+          - unique
+          - not_null
+      - name: part_id
+        description: "Business key from source (P_PARTKEY)."
+        data_tests:
+          - not_null
+      - name: part_name
+        description: "Part name."
+      - name: brand
+        description: "Brand."
+      - name: type
+        description: "Type."
+      - name: size
+        description: "Size."
+
+  - name: dim_location
+    description: "Location dimension (nation + region, current state)."
+    columns:
+      - name: nation_hk
+        description: "Surrogate key (hash) for nation."
+        data_tests:
+          - not_null
+      - name: nation_id
+        description: "Business key from source (N_NATIONKEY)."
+        data_tests:
+          - not_null
+      - name: nation_name
+        description: "Nation name."
+      - name: region_hk
+        description: "Surrogate key (hash) for region."
+        data_tests:
+          - not_null
+      - name: region_id
+        description: "Business key from source (R_REGIONKEY)."
+        data_tests:
+          - not_null
+      - name: region_name
+        description: "Region name."
+
+  - name: dim_date
+    description: "Date dimension (standard calendar attributes)."
+    columns:
+      - name: date_id
+        description: "Date surrogate key (date)."
+        data_tests:
+          - unique
+          - not_null
+      - name: year
+        description: "Year."
+      - name: month
+        description: "Month."
+      - name: day
+        description: "Day."
+      - name: quarter
+        description: "Quarter."
+      - name: week
+        description: "Week."
+      - name: day_name
+        description: "Day name."
+      - name: month_name
+        description: "Month name."
+
+  - name: fct_sales
+    description: "Fact table for sales at lineitem grain."
+    columns:
+      - name: lineitem_hk
+        description: "Surrogate key (hash) for lineitem."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_hk
+        description: "Order hash key."
+        data_tests:
+          - not_null
+      - name: customer_hk
+        description: "Customer hash key."
+        data_tests:
+          - not_null
+      - name: part_hk
+        description: "Part hash key."
+        data_tests:
+          - not_null
+      - name: supplier_hk
+        description: "Supplier hash key."
+        data_tests:
+          - not_null
+      - name: order_date
+        description: "Order date."
+      - name: ship_date
+        description: "Ship date."
+      - name: receipt_date
+        description: "Receipt date."
+      - name: quantity
+        description: "Quantity."
+      - name: extended_price
+        description: "Extended price."
+      - name: discount_percentage
+        description: "Discount percentage."
+      - name: tax_percentage
+        description: "Tax percentage."
+      - name: item_total_price
+        description: "Item total price (quantity * extended_price)."
+      - name: net_revenue
+        description: "Net revenue (item_total_price * (1 - discount_percentage))."
