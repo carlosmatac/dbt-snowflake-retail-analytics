@@ -10,7 +10,7 @@ with customer_latest as (
         s.C_PHONE as phone,
         s.C_ACCTBAL as account_balance,
         s.C_MKTSEGMENT as market_segment,
-        c.C_NATIONKEY as nation_id,
+        s.C_NATIONKEY as nation_id,
         s.C_COMMENT as comment,
         s.LOAD_DATETIME as load_datetime,
         s.RECORD_SOURCE as record_source,
@@ -25,18 +25,18 @@ nation as (
     select
         n.NATION_HK,
         n.N_NATIONKEY as nation_id,
-        s.N_NAME as nation_name,
-        s.N_REGIONKEY as region_id
+        sn.N_NAME as nation_name,
+        sn.N_REGIONKEY as region_id
     from {{ ref('hub_nation') }} n
-    join {{ ref('sat_nation') }} s on n.NATION_HK = s.NATION_HK
+    join {{ ref('sat_nation') }} sn on n.NATION_HK = sn.NATION_HK
 ),
 region as (
     select
         r.REGION_HK,
         r.R_REGIONKEY as region_id,
-        s.R_NAME as region_name
+        sr.R_NAME as region_name
     from {{ ref('hub_region') }} r
-    join {{ ref('sat_region') }} s on r.REGION_HK = s.REGION_HK
+    join {{ ref('sat_region') }} sr on r.REGION_HK = sr.REGION_HK
 )
 select
     c.customer_hk,
@@ -51,5 +51,5 @@ select
     c.load_datetime,
     c.record_source
 from customer_current c
-left join nation n on c.nation_id = n.nation_id
-left join region rg on n.region_id = rg.region_id
+left join nation n on c.nation_id = n.NATION_HK
+left join region rg on n.region_id = rg.REGION_HK

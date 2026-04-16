@@ -9,7 +9,7 @@ with supplier_latest as (
         st.S_ADDRESS as address,
         st.S_PHONE as phone,
         st.S_ACCTBAL as account_balance,
-        s.NATION_HK as nation_id,
+        st.NATION_HK as nation_id,
         st.S_COMMENT as comment,
         st.LOAD_DATETIME as load_datetime,
         st.RECORD_SOURCE as record_source,
@@ -24,18 +24,18 @@ nation as (
     select
         n.NATION_HK,
         n.N_NATIONKEY as nation_id,
-        s.N_NAME as nation_name,
-        s.N_REGIONKEY as region_id
+        sn.N_NAME as nation_name,
+        sn.N_REGIONKEY as region_id
     from {{ ref('hub_nation') }} n
-    join {{ ref('sat_nation') }} s on n.NATION_HK = s.NATION_HK
+    join {{ ref('sat_nation') }} sn on n.NATION_HK = sn.NATION_HK
 ),
 region as (
     select
         r.REGION_HK,
         r.R_REGIONKEY as region_id,
-        s.R_NAME as region_name
+        sr.R_NAME as region_name
     from {{ ref('hub_region') }} r
-    join {{ ref('sat_region') }} s on r.REGION_HK = s.REGION_HK
+    join {{ ref('sat_region') }} sr on r.REGION_HK = sr.REGION_HK
 )
 select
     s.supplier_hk,
@@ -49,5 +49,5 @@ select
     s.load_datetime,
     s.record_source
 from supplier_current s
-left join nation n on s.nation_id = n.nation_id
-left join region rg on n.region_id = rg.region_id
+left join nation n on s.nation_id = n.NATION_HK
+left join region rg on n.region_id = rg.REGION_HK
