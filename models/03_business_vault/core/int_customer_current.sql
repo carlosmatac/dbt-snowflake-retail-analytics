@@ -27,9 +27,10 @@ nation as (
         n.NATION_HK,
         n.N_NATIONKEY as nation_id,
         sn.N_NAME as nation_name,
-        sn.N_REGIONKEY as region_id
+        ln.REGION_HK as region_id
     from {{ ref('hub_nation') }} n
     join {{ ref('sat_nation') }} sn on n.NATION_HK = sn.NATION_HK
+    join {{ ref('link_nation_region') }} ln on n.NATION_HK = ln.NATION_HK
 ),
 region as (
     select
