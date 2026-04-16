@@ -9,13 +9,14 @@ with supplier_latest as (
         st.S_ADDRESS as address,
         st.S_PHONE as phone,
         st.S_ACCTBAL as account_balance,
-        st.NATION_HK as nation_id,
+        ln.S_NATIONKEY as nation_id,
         st.S_COMMENT as comment,
         st.LOAD_DATETIME as load_datetime,
         st.RECORD_SOURCE as record_source,
         row_number() over (partition by s.SUPPLIER_HK order by st.LOAD_DATETIME desc) as rn
     from {{ ref('hub_supplier') }} s
     join {{ ref('sat_supplier') }} st on s.SUPPLIER_HK = st.SUPPLIER_HK
+    join {{ ref('link_supplier_nation') }} ln on s.SUPPLIER_HK = ln.SUPPLIER_HK
 ),
 supplier_current as (
     select * from supplier_latest where rn = 1

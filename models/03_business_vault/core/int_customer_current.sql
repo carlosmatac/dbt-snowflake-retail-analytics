@@ -10,13 +10,14 @@ with customer_latest as (
         s.C_PHONE as phone,
         s.C_ACCTBAL as account_balance,
         s.C_MKTSEGMENT as market_segment,
-        s.C_NATIONKEY as nation_id,
+        ln.C_NATIONKEY as nation_id,
         s.C_COMMENT as comment,
         s.LOAD_DATETIME as load_datetime,
         s.RECORD_SOURCE as record_source,
         row_number() over (partition by c.CUSTOMER_HK order by s.LOAD_DATETIME desc) as rn
     from {{ ref('hub_customer') }} c
     join {{ ref('sat_customer') }} s on c.CUSTOMER_HK = s.CUSTOMER_HK
+    join {{ ref('link_customer_nation') }} ln on c.CUSTOMER_HK = ln.CUSTOMER_HK
 ),
 customer_current as (
     select * from customer_latest where rn = 1

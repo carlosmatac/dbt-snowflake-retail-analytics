@@ -27,7 +27,7 @@ lineitem_current as (
     select * from lineitem_latest where rn = 1
 ),
 order_dates as (
-    select order_hk, order_date from {{ ref('int_order_current') }}
+    select order_hk, o_orderdate as order_date from {{ ref('sat_order') }}
 ),
 order_customer as (
     select order_hk, customer_hk from {{ ref('link_order_customer') }}
