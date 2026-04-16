@@ -9,7 +9,7 @@ with supplier_latest as (
         st.S_ADDRESS as address,
         st.S_PHONE as phone,
         st.S_ACCTBAL as account_balance,
-        ln.S_NATIONKEY as nation_id,
+        ln.NATION_HK as nation_id,
         st.S_COMMENT as comment,
         st.LOAD_DATETIME as load_datetime,
         st.RECORD_SOURCE as record_source,
