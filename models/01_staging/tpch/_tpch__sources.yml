@@ -76,7 +76,7 @@ sources:
         description: "Part-supplier relationship with stock attributes."
         data_tests:
           - dbt_utils.unique_combination_of_columns:
-              arguments
+              arguments:
                 combination_of_columns:
                   - PS_PARTKEY
                   - PS_SUPPKEY

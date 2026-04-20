@@ -250,9 +250,11 @@ models:
     description: "Customer satellite — descriptive attributes (no FK leakage)."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [CUSTOMER_HK, CUSTOMER_HASHDIFF]
+          arguments:
+            combination_of_columns: [CUSTOMER_HK, CUSTOMER_HASHDIFF]
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [CUSTOMER_HK, LOAD_DATETIME]
+          arguments:
+            combination_of_columns: [CUSTOMER_HK, LOAD_DATETIME]
     columns:
       - name: CUSTOMER_HK
         data_tests:
@@ -272,9 +274,11 @@ models:
     description: "Order satellite — descriptive attributes."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [ORDER_HK, ORDER_HASHDIFF]
+          arguments:
+            combination_of_columns: [ORDER_HK, ORDER_HASHDIFF]
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [ORDER_HK, LOAD_DATETIME]
+          arguments:
+            combination_of_columns: [ORDER_HK, LOAD_DATETIME]
     columns:
       - name: ORDER_HK
         data_tests:
@@ -294,9 +298,11 @@ models:
     description: "Lineitem satellite — descriptive/measure attributes on the link grain."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [LINEITEM_HK, LINEITEM_HASHDIFF]
+          arguments:
+            combination_of_columns: [LINEITEM_HK, LINEITEM_HASHDIFF]
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [LINEITEM_HK, LOAD_DATETIME]
+          arguments:
+            combination_of_columns: [LINEITEM_HK, LOAD_DATETIME]
     columns:
       - name: LINEITEM_HK
         data_tests:
@@ -316,9 +322,11 @@ models:
     description: "Part satellite — descriptive attributes."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [PART_HK, PART_HASHDIFF]
+          arguments:
+            combination_of_columns: [PART_HK, PART_HASHDIFF]
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [PART_HK, LOAD_DATETIME]
+          arguments:
+            combination_of_columns: [PART_HK, LOAD_DATETIME]
     columns:
       - name: PART_HK
         data_tests:
@@ -338,9 +346,11 @@ models:
     description: "Supplier satellite — descriptive attributes."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [SUPPLIER_HK, SUPPLIER_HASHDIFF]
+          arguments:
+            combination_of_columns: [SUPPLIER_HK, SUPPLIER_HASHDIFF]
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [SUPPLIER_HK, LOAD_DATETIME]
+          arguments:
+            combination_of_columns: [SUPPLIER_HK, LOAD_DATETIME]
     columns:
       - name: SUPPLIER_HK
         data_tests:
@@ -360,9 +370,11 @@ models:
     description: "Part-supplier link satellite (stock attributes)."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [PART_SUPPLIER_HK, PART_SUPPLIER_HASHDIFF]
+          arguments:
+            combination_of_columns: [PART_SUPPLIER_HK, PART_SUPPLIER_HASHDIFF]
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [PART_SUPPLIER_HK, LOAD_DATETIME]
+          arguments:
+            combination_of_columns: [PART_SUPPLIER_HK, LOAD_DATETIME]
     columns:
       - name: PART_SUPPLIER_HK
         data_tests:
@@ -382,9 +394,11 @@ models:
     description: "Nation satellite — descriptive attributes (FK to region now lives only in link_nation_region)."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [NATION_HK, NATION_HASHDIFF]
+          arguments:
+            combination_of_columns: [NATION_HK, NATION_HASHDIFF]
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [NATION_HK, LOAD_DATETIME]
+          arguments:
+            combination_of_columns: [NATION_HK, LOAD_DATETIME]
     columns:
       - name: NATION_HK
         data_tests:
@@ -404,9 +418,11 @@ models:
     description: "Region satellite — descriptive attributes."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [REGION_HK, REGION_HASHDIFF]
+          arguments:
+            combination_of_columns: [REGION_HK, REGION_HASHDIFF]
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [REGION_HK, LOAD_DATETIME]
+          arguments:
+            combination_of_columns: [REGION_HK, LOAD_DATETIME]
     columns:
       - name: REGION_HK
         data_tests:
