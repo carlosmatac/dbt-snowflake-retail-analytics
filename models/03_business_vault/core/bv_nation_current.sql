@@ -6,11 +6,10 @@ select
     s.LOAD_DATETIME   as load_datetime,
     s.RECORD_SOURCE   as record_source
 from {{ ref('hub_nation') }} h
+inner join {{ ref('pit_nation') }} p
+    on h.NATION_HK = p.NATION_HK
 inner join {{ ref('sat_nation') }} s
-    on h.NATION_HK = s.NATION_HK
+    on p.SAT_NATION_PK   = s.NATION_HK
+   and p.SAT_NATION_LDTS = s.LOAD_DATETIME
 left join {{ ref('link_nation_region') }} ln
     on h.NATION_HK = ln.NATION_HK
-qualify row_number() over (
-    partition by h.NATION_HK
-    order by s.LOAD_DATETIME desc
-) = 1

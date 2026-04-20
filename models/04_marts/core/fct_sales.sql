@@ -23,7 +23,7 @@ select
     item_total_price,
     net_revenue,
     load_datetime
-from {{ ref('pit_lineitem_sales') }}
+from {{ ref('bv_lineitem_sales') }}
 
 {% if is_incremental() %}
 where load_datetime > (select coalesce(max(load_datetime), '1900-01-01'::timestamp) from {{ this }})

@@ -10,7 +10,7 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('pit_customer')
+              to: ref('bv_customer_current')
               field: customer_hk
       - name: customer_id
         data_tests: [not_null]
@@ -27,7 +27,7 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('pit_supplier')
+              to: ref('bv_supplier_current')
               field: supplier_hk
       - name: supplier_id
         data_tests: [not_null]
@@ -43,7 +43,7 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('pit_order')
+              to: ref('bv_order_current')
               field: order_hk
       - name: order_id
         data_tests: [not_null]
@@ -65,7 +65,7 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('pit_part')
+              to: ref('bv_part_current')
               field: part_hk
       - name: part_id
         data_tests: [not_null]

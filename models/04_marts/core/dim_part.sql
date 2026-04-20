@@ -5,4 +5,4 @@ select
     brand,
     part_type,
     part_size
-from {{ ref('pit_part') }}
+from {{ ref('bv_part_current') }}

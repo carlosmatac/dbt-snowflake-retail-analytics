@@ -6,4 +6,4 @@ select
     clerk_name,
     order_date,
     cast(order_date as date) as order_date_id
-from {{ ref('pit_order') }}
+from {{ ref('bv_order_current') }}

@@ -4,4 +4,4 @@ select
     supplier_name,
     nation_name,
     region_name
-from {{ ref('pit_supplier') }}
+from {{ ref('bv_supplier_current') }}

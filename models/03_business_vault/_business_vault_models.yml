@@ -1,8 +1,87 @@
 version: 2
 
 models:
+  # ============================================================
+  # Snapshot spine (drives every automate_dv.pit)
+  # ============================================================
+  - name: as_of_date
+    description: "Snapshot spine consumed by automate_dv.pit(). Single 'now' row; extend with dbt_utils.date_spine for historical PITs."
+    columns:
+      - name: AS_OF_DATE
+        data_tests: [unique, not_null]
+
+  # ============================================================
+  # PIT lookup tables (automate_dv.pit) — keys + sat LDTS only
+  # ============================================================
   - name: pit_customer
-    description: "Point-in-time (current) customer view — latest sat_customer per hub, enriched with nation/region via pit_location."
+    description: "PIT lookup over sat_customer (automate_dv.pit)."
+    columns:
+      - name: CUSTOMER_HK
+        data_tests: [not_null]
+      - name: AS_OF_DATE
+        data_tests: [not_null]
+      - name: SAT_CUSTOMER_PK
+        data_tests: [not_null]
+      - name: SAT_CUSTOMER_LDTS
+        data_tests: [not_null]
+
+  - name: pit_order
+    description: "PIT lookup over sat_order."
+    columns:
+      - name: ORDER_HK
+        data_tests: [not_null]
+      - name: AS_OF_DATE
+        data_tests: [not_null]
+      - name: SAT_ORDER_PK
+        data_tests: [not_null]
+      - name: SAT_ORDER_LDTS
+        data_tests: [not_null]
+
+  - name: pit_part
+    description: "PIT lookup over sat_part."
+    columns:
+      - name: PART_HK
+        data_tests: [not_null]
+      - name: AS_OF_DATE
+        data_tests: [not_null]
+
+  - name: pit_supplier
+    description: "PIT lookup over sat_supplier."
+    columns:
+      - name: SUPPLIER_HK
+        data_tests: [not_null]
+      - name: AS_OF_DATE
+        data_tests: [not_null]
+
+  - name: pit_nation
+    description: "PIT lookup over sat_nation."
+    columns:
+      - name: NATION_HK
+        data_tests: [not_null]
+      - name: AS_OF_DATE
+        data_tests: [not_null]
+
+  - name: pit_region
+    description: "PIT lookup over sat_region."
+    columns:
+      - name: REGION_HK
+        data_tests: [not_null]
+      - name: AS_OF_DATE
+        data_tests: [not_null]
+
+  - name: pit_lineitem
+    description: "PIT lookup over sat_lineitem (linked to link_lineitem by LINEITEM_HK)."
+    columns:
+      - name: LINEITEM_HK
+        data_tests: [not_null]
+      - name: AS_OF_DATE
+        data_tests: [not_null]
+
+  # ============================================================
+  # BV current-state views — hub + pit + sat
+  # ============================================================
+  - name: bv_customer_current
+    description: "Current customer state via hub_customer + pit_customer + sat_customer, enriched with location via bv_location_current."
     columns:
       - name: customer_hk
         data_tests: [unique, not_null]
@@ -22,28 +101,23 @@ models:
       - name: record_source
         data_tests: [not_null]
 
-  - name: pit_supplier
-    description: "Point-in-time (current) supplier view — latest sat_supplier per hub, enriched via pit_location."
+  - name: bv_supplier_current
+    description: "Current supplier state via hub + pit + sat, enriched with location."
     columns:
       - name: supplier_hk
         data_tests: [unique, not_null]
       - name: supplier_id
         data_tests: [not_null]
       - name: supplier_name
-      - name: address
-      - name: phone
-      - name: account_balance
-      - name: nation_hk
       - name: nation_name
-      - name: region_hk
       - name: region_name
       - name: load_datetime
         data_tests: [not_null]
       - name: record_source
         data_tests: [not_null]
 
-  - name: pit_order
-    description: "Point-in-time (current) order view — latest sat_order per hub."
+  - name: bv_order_current
+    description: "Current order state via hub + pit + sat."
     columns:
       - name: order_hk
         data_tests: [unique, not_null]
@@ -59,8 +133,8 @@ models:
       - name: record_source
         data_tests: [not_null]
 
-  - name: pit_part
-    description: "Point-in-time (current) part view — latest sat_part per hub."
+  - name: bv_part_current
+    description: "Current part state via hub + pit + sat."
     columns:
       - name: part_hk
         data_tests: [unique, not_null]
@@ -77,8 +151,8 @@ models:
       - name: record_source
         data_tests: [not_null]
 
-  - name: pit_nation
-    description: "Point-in-time (current) nation view — latest sat_nation per hub plus region FK from link."
+  - name: bv_nation_current
+    description: "Current nation state via hub + pit + sat, plus region_hk from link_nation_region."
     columns:
       - name: nation_hk
         data_tests: [unique, not_null]
@@ -91,8 +165,8 @@ models:
       - name: record_source
         data_tests: [not_null]
 
-  - name: pit_region
-    description: "Point-in-time (current) region view — latest sat_region per hub."
+  - name: bv_region_current
+    description: "Current region state via hub + pit + sat."
     columns:
       - name: region_hk
         data_tests: [unique, not_null]
@@ -104,22 +178,20 @@ models:
       - name: record_source
         data_tests: [not_null]
 
-  - name: pit_location
-    description: "Joined nation + region — single source for location attributes in BV/marts."
+  - name: bv_location_current
+    description: "Nation + Region joined view. Single SOT for location attributes."
     columns:
       - name: nation_hk
         data_tests: [unique, not_null]
       - name: nation_id
-        data_tests: [not_null]
       - name: nation_name
       - name: region_hk
         data_tests: [not_null]
       - name: region_id
-        data_tests: [not_null]
       - name: region_name
 
-  - name: pit_lineitem_sales
-    description: "Point-in-time sales at lineitem grain; joins link_lineitem + latest sat_lineitem + pit_order for order_date + link_order_customer for customer_hk; exposes date surrogates."
+  - name: bv_lineitem_sales
+    description: "Current sales at lineitem grain; link_lineitem + pit_lineitem + sat_lineitem, enriched with bv_order_current for order_date and link_order_customer for customer_hk."
     columns:
       - name: lineitem_hk
         data_tests: [unique, not_null]

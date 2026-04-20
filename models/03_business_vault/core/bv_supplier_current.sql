@@ -10,14 +10,13 @@ with supplier_current as (
         s.LOAD_DATETIME                as load_datetime,
         s.RECORD_SOURCE                as record_source
     from {{ ref('hub_supplier') }} h
+    inner join {{ ref('pit_supplier') }} p
+        on h.SUPPLIER_HK = p.SUPPLIER_HK
     inner join {{ ref('sat_supplier') }} s
-        on h.SUPPLIER_HK = s.SUPPLIER_HK
+        on p.SAT_SUPPLIER_PK   = s.SUPPLIER_HK
+       and p.SAT_SUPPLIER_LDTS = s.LOAD_DATETIME
     left join {{ ref('link_supplier_nation') }} ln
         on h.SUPPLIER_HK = ln.SUPPLIER_HK
-    qualify row_number() over (
-        partition by h.SUPPLIER_HK
-        order by s.LOAD_DATETIME desc
-    ) = 1
 )
 
 select
@@ -34,5 +33,5 @@ select
     s.load_datetime,
     s.record_source
 from supplier_current s
-left join {{ ref('pit_location') }} l
+left join {{ ref('bv_location_current') }} l
     on s.nation_hk = l.nation_hk

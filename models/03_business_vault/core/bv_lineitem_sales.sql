@@ -17,12 +17,11 @@ with lineitem_current as (
         s.LOAD_DATETIME      as load_datetime,
         s.RECORD_SOURCE      as record_source
     from {{ ref('link_lineitem') }} l
+    inner join {{ ref('pit_lineitem') }} p
+        on l.LINEITEM_HK = p.LINEITEM_HK
     inner join {{ ref('sat_lineitem') }} s
-        on l.LINEITEM_HK = s.LINEITEM_HK
-    qualify row_number() over (
-        partition by l.LINEITEM_HK
-        order by s.LOAD_DATETIME desc
-    ) = 1
+        on p.SAT_LINEITEM_PK   = s.LINEITEM_HK
+       and p.SAT_LINEITEM_LDTS = s.LOAD_DATETIME
 )
 
 select
@@ -53,5 +52,5 @@ select
     l.load_datetime,
     l.record_source
 from lineitem_current l
-left join {{ ref('pit_order') }}           o  on l.order_hk = o.order_hk
+left join {{ ref('bv_order_current') }}    o  on l.order_hk = o.order_hk
 left join {{ ref('link_order_customer') }} oc on l.order_hk = oc.ORDER_HK

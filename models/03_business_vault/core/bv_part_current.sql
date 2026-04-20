@@ -10,9 +10,8 @@ select
     s.LOAD_DATETIME      as load_datetime,
     s.RECORD_SOURCE      as record_source
 from {{ ref('hub_part') }} h
+inner join {{ ref('pit_part') }} p
+    on h.PART_HK = p.PART_HK
 inner join {{ ref('sat_part') }} s
-    on h.PART_HK = s.PART_HK
-qualify row_number() over (
-    partition by h.PART_HK
-    order by s.LOAD_DATETIME desc
-) = 1
+    on p.SAT_PART_PK   = s.PART_HK
+   and p.SAT_PART_LDTS = s.LOAD_DATETIME

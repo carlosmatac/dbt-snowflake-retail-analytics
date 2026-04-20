@@ -11,14 +11,13 @@ with customer_current as (
         s.LOAD_DATETIME                    as load_datetime,
         s.RECORD_SOURCE                    as record_source
     from {{ ref('hub_customer') }} h
+    inner join {{ ref('pit_customer') }} p
+        on h.CUSTOMER_HK = p.CUSTOMER_HK
     inner join {{ ref('sat_customer') }} s
-        on h.CUSTOMER_HK = s.CUSTOMER_HK
+        on p.SAT_CUSTOMER_PK   = s.CUSTOMER_HK
+       and p.SAT_CUSTOMER_LDTS = s.LOAD_DATETIME
     left join {{ ref('link_customer_nation') }} ln
         on h.CUSTOMER_HK = ln.CUSTOMER_HK
-    qualify row_number() over (
-        partition by h.CUSTOMER_HK
-        order by s.LOAD_DATETIME desc
-    ) = 1
 )
 
 select
@@ -36,5 +35,5 @@ select
     c.load_datetime,
     c.record_source
 from customer_current c
-left join {{ ref('pit_location') }} l
+left join {{ ref('bv_location_current') }} l
     on c.nation_hk = l.nation_hk

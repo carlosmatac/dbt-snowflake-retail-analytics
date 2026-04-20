@@ -7,6 +7,6 @@ select
     r.region_name,
     n.load_datetime as nation_load_datetime,
     r.load_datetime as region_load_datetime
-from {{ ref('pit_nation') }} n
-left join {{ ref('pit_region') }} r
+from {{ ref('bv_nation_current') }} n
+left join {{ ref('bv_region_current') }} r
     on n.region_hk = r.region_hk
