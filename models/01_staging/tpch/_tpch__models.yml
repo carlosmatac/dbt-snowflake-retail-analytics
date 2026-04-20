@@ -2,80 +2,125 @@ version: 2
 
 models:
   - name: stg_tpch__customers
+    description: "Staging for TPCH customers with pre-computed hash keys and hashdiff."
     columns:
       - name: CUSTOMER_HK
-        tests:
-          - unique
-          - not_null
-      - name: CUSTOMER_NATION_HK
-        tests:
+        description: "Hash key for customer (MD5 of C_CUSTKEY)."
+        data_tests:
           - unique
           - not_null
       - name: NATION_HK
-        tests:
+        description: "Hash key for nation (MD5 of C_NATIONKEY)."
+        data_tests:
+          - not_null
+      - name: CUSTOMER_NATION_HK
+        description: "Hash key for customer-nation link (MD5 of C_CUSTKEY || C_NATIONKEY)."
+        data_tests:
+          - unique
           - not_null
       - name: C_CUSTKEY
-        tests:
+        description: "Customer natural key."
+        data_tests:
+          - not_null
+      - name: CUSTOMER_HASHDIFF
+        description: "Hashdiff over customer descriptive payload."
+        data_tests:
+          - not_null
+      - name: LOAD_DATETIME
+        description: "Ingestion timestamp (CURRENT_TIMESTAMP at stage build)."
+        data_tests:
+          - not_null
+      - name: RECORD_SOURCE
+        description: "Origin system tag."
+        data_tests:
           - not_null
 
   - name: stg_tpch__orders
+    description: "Staging for TPCH orders with pre-computed hash keys and hashdiff."
     columns:
       - name: ORDER_HK
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
+      - name: CUSTOMER_HK
+        data_tests: [not_null]
+      - name: ORDER_CUSTOMER_HK
+        data_tests: [unique, not_null]
+      - name: ORDER_HASHDIFF
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: stg_tpch__lineitem
+    description: "Staging for TPCH lineitems."
     columns:
       - name: LINEITEM_HK
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
+      - name: ORDER_HK
+        data_tests: [not_null]
+      - name: PART_HK
+        data_tests: [not_null]
+      - name: SUPPLIER_HK
+        data_tests: [not_null]
+      - name: LINEITEM_HASHDIFF
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: stg_tpch__part
+    description: "Staging for TPCH parts."
     columns:
       - name: PART_HK
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
+      - name: PART_HASHDIFF
+        data_tests: [not_null]
 
   - name: stg_tpch__supplier
+    description: "Staging for TPCH suppliers."
     columns:
       - name: SUPPLIER_HK
-        tests:
-          - unique
-          - not_null
-      - name: SUPPLIER_NATION_HK
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: NATION_HK
-        tests:
-          - not_null
+        data_tests: [not_null]
+      - name: SUPPLIER_NATION_HK
+        data_tests: [unique, not_null]
+      - name: SUPPLIER_HASHDIFF
+        data_tests: [not_null]
 
   - name: stg_tpch__nation
+    description: "Staging for TPCH nations."
     columns:
       - name: NATION_HK
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: REGION_HK
-        tests:
-          - not_null
+        data_tests: [not_null]
       - name: NATION_REGION_HK
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
+      - name: NATION_HASHDIFF
+        data_tests: [not_null]
+
+  - name: stg_tpch__region
+    description: "Staging for TPCH regions."
+    columns:
+      - name: REGION_HK
+        data_tests: [unique, not_null]
+      - name: REGION_HASHDIFF
+        data_tests: [not_null]
 
   - name: stg_tpch__partsupp
+    description: "Staging for TPCH part-supplier relationship with stock attributes."
     columns:
+      - name: PART_HK
+        data_tests: [not_null]
+      - name: SUPPLIER_HK
+        data_tests: [not_null]
       - name: PART_SUPPLIER_HK
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
+      - name: PART_SUPPLIER_HASHDIFF
+        data_tests: [not_null]
       - name: PS_PARTKEY
-        tests:
-          - not_null
+        data_tests: [not_null]
       - name: PS_SUPPKEY
-        tests:
-          - not_null
+        data_tests: [not_null]
