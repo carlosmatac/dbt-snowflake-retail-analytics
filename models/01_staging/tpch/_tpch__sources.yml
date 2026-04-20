@@ -2,14 +2,85 @@ version: 2
 
 sources:
   - name: tpch
+    description: "Snowflake sample dataset TPCH_SF1 (static reference data)."
     database: SNOWFLAKE_SAMPLE_DATA
     schema: TPCH_SF1
+    loaded_at_field: null
     tables:
       - name: customer
+        description: "Customers master data."
+        columns:
+          - name: C_CUSTKEY
+            description: "Customer natural key."
+            data_tests:
+              - unique
+              - not_null
+
       - name: orders
+        description: "Orders header."
+        columns:
+          - name: O_ORDERKEY
+            description: "Order natural key."
+            data_tests:
+              - unique
+              - not_null
+          - name: O_CUSTKEY
+            description: "FK to customer."
+            data_tests:
+              - not_null
+
       - name: lineitem
+        description: "Order line items (fact grain)."
+        data_tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - L_ORDERKEY
+                - L_LINENUMBER
+        columns:
+          - name: L_ORDERKEY
+            data_tests: [not_null]
+          - name: L_PARTKEY
+            data_tests: [not_null]
+          - name: L_SUPPKEY
+            data_tests: [not_null]
+          - name: L_LINENUMBER
+            data_tests: [not_null]
+
       - name: part
+        description: "Parts master data."
+        columns:
+          - name: P_PARTKEY
+            data_tests: [unique, not_null]
+
       - name: supplier
+        description: "Suppliers master data."
+        columns:
+          - name: S_SUPPKEY
+            data_tests: [unique, not_null]
+
       - name: nation
+        description: "Nations reference."
+        columns:
+          - name: N_NATIONKEY
+            data_tests: [unique, not_null]
+          - name: N_REGIONKEY
+            data_tests: [not_null]
+
       - name: region
+        description: "Regions reference."
+        columns:
+          - name: R_REGIONKEY
+            data_tests: [unique, not_null]
+
       - name: partsupp
+        description: "Part-supplier relationship with stock attributes."
+        data_tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - PS_PARTKEY
+                - PS_SUPPKEY
+        columns:
+          - name: PS_PARTKEY
+            data_tests: [not_null]
+          - name: PS_SUPPKEY
+            data_tests: [not_null]
