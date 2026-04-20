@@ -1,7 +1,7 @@
 {{ config(materialized='incremental') }}
 
 {%- set source_model = "stg_tpch__orders" -%}
-{%- set src_pk = "ORDER_CUSTOMER_HK" -%} -- Ojo: Asegúrate de que este HK esté en tu stg_orders, si no, usa una lista [ORDER_HK, CUSTOMER_HK]
+{%- set src_pk = "ORDER_CUSTOMER_HK" -%}
 {%- set src_fk = ["ORDER_HK", "CUSTOMER_HK"] -%}
 {%- set src_ldts = "LOAD_DATETIME" -%}
 {%- set src_source = "RECORD_SOURCE" -%}
