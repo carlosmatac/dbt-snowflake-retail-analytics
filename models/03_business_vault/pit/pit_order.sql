@@ -1,8 +1,7 @@
 {{ config(materialized='table') }}
 
 {%- set yaml_metadata -%}
-source_model:
-  - "stg_tpch__orders"
+source_model: "stg_tpch__orders"
 src_pk: "ORDER_HK"
 as_of_dates_table: "as_of_date"
 satellites:

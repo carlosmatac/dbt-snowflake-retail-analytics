@@ -4,8 +4,7 @@
 -- as the parent entity as long as src_pk matches the link PK.
 
 {%- set yaml_metadata -%}
-source_model:
-  - "stg_tpch__lineitem"
+source_model: "stg_tpch__lineitem"
 src_pk: "LINEITEM_HK"
 as_of_dates_table: "as_of_date"
 satellites:
