@@ -1,6 +1,3 @@
--- Dimension: Customers
--- Source: int_customer_current
-
 select
     customer_hk,
     customer_id,
@@ -8,4 +5,4 @@ select
     market_segment,
     nation_name,
     region_name
-from {{ ref('int_customer_current') }}
+from {{ ref('pit_customer') }}
