@@ -5,7 +5,6 @@ sources:
     description: "Snowflake sample dataset TPCH_SF1 (static reference data)."
     database: SNOWFLAKE_SAMPLE_DATA
     schema: TPCH_SF1
-    loaded_at_field: null
     tables:
       - name: customer
         description: "Customers master data."
@@ -33,9 +32,10 @@ sources:
         description: "Order line items (fact grain)."
         data_tests:
           - dbt_utils.unique_combination_of_columns:
-              combination_of_columns:
-                - L_ORDERKEY
-                - L_LINENUMBER
+              arguments:
+                combination_of_columns:
+                  - L_ORDERKEY
+                  - L_LINENUMBER
         columns:
           - name: L_ORDERKEY
             data_tests: [not_null]
@@ -76,9 +76,10 @@ sources:
         description: "Part-supplier relationship with stock attributes."
         data_tests:
           - dbt_utils.unique_combination_of_columns:
-              combination_of_columns:
-                - PS_PARTKEY
-                - PS_SUPPKEY
+              arguments
+                combination_of_columns:
+                  - PS_PARTKEY
+                  - PS_SUPPKEY
         columns:
           - name: PS_PARTKEY
             data_tests: [not_null]

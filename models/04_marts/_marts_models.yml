@@ -10,8 +10,9 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('bv_customer_current')
-              field: customer_hk
+              arguments:
+                to: ref('bv_customer_current')
+                field: customer_hk
       - name: customer_id
         data_tests: [not_null]
       - name: customer_name
@@ -27,8 +28,9 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('bv_supplier_current')
-              field: supplier_hk
+              arguments:
+                to: ref('bv_supplier_current')
+                field: supplier_hk
       - name: supplier_id
         data_tests: [not_null]
       - name: supplier_name
@@ -43,8 +45,9 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('bv_order_current')
-              field: order_hk
+              arguments:
+                to: ref('bv_order_current')
+                field: order_hk
       - name: order_id
         data_tests: [not_null]
       - name: order_status
@@ -54,8 +57,9 @@ models:
       - name: order_date_id
         data_tests:
           - relationships:
-              to: ref('dim_date')
-              field: date_id
+              arguments:
+                to: ref('dim_date')
+                field: date_id
 
   - name: dim_part
     description: "Part dimension (current state). Columns size/type renamed to part_size/part_type to avoid BI-driver quoting issues."
@@ -65,8 +69,9 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('bv_part_current')
-              field: part_hk
+              arguments:
+                to: ref('bv_part_current')
+                field: part_hk
       - name: part_id
         data_tests: [not_null]
       - name: part_name
@@ -97,42 +102,49 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_order')
-              field: order_hk
+              arguments:
+                to: ref('dim_order')
+                field: order_hk
       - name: customer_hk
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_customers')
-              field: customer_hk
+              arguments:
+                to: ref('dim_customers')
+                field: customer_hk
       - name: part_hk
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_part')
-              field: part_hk
+              arguments:
+                to: ref('dim_part')
+                field: part_hk
       - name: supplier_hk
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_supplier')
-              field: supplier_hk
+              arguments:
+                to: ref('dim_supplier')
+                field: supplier_hk
       - name: order_date_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_id
+              arguments:
+                to: ref('dim_date')
+                field: date_id
       - name: ship_date_id
         data_tests:
           - relationships:
-              to: ref('dim_date')
-              field: date_id
+              arguments:
+                to: ref('dim_date')
+                field: date_id
       - name: receipt_date_id
         data_tests:
           - relationships:
-              to: ref('dim_date')
-              field: date_id
+              arguments:
+                to: ref('dim_date')
+                field: date_id
       - name: order_date
       - name: ship_date
       - name: receipt_date

@@ -101,20 +101,23 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_order')
-              field: ORDER_HK
+              arguments:
+                to: ref('hub_order')
+                field: ORDER_HK
       - name: PART_HK
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_part')
-              field: PART_HK
+              arguments:
+                to: ref('hub_part')
+                field: PART_HK
       - name: SUPPLIER_HK
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_supplier')
-              field: SUPPLIER_HK
+              arguments:
+                to: ref('hub_supplier')
+                field: SUPPLIER_HK
       - name: LOAD_DATETIME
         data_tests: [not_null]
       - name: RECORD_SOURCE
@@ -129,14 +132,16 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_order')
-              field: ORDER_HK
+              arguments:
+                to: ref('hub_order')
+                field: ORDER_HK
       - name: CUSTOMER_HK
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_customer')
-              field: CUSTOMER_HK
+              arguments:
+                to: ref('hub_customer')
+                field: CUSTOMER_HK
       - name: LOAD_DATETIME
         data_tests: [not_null]
       - name: RECORD_SOURCE
@@ -151,14 +156,16 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_part')
-              field: PART_HK
+              arguments:
+                to: ref('hub_part')
+                field: PART_HK
       - name: SUPPLIER_HK
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_supplier')
-              field: SUPPLIER_HK
+              arguments:
+                to: ref('hub_supplier')
+                field: SUPPLIER_HK
       - name: LOAD_DATETIME
         data_tests: [not_null]
       - name: RECORD_SOURCE
@@ -173,14 +180,16 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_customer')
-              field: CUSTOMER_HK
+              arguments:
+                to: ref('hub_customer')
+                field: CUSTOMER_HK
       - name: NATION_HK
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_nation')
-              field: NATION_HK
+              arguments:
+                to: ref('hub_nation')
+                field: NATION_HK
       - name: LOAD_DATETIME
         data_tests: [not_null]
       - name: RECORD_SOURCE
@@ -195,14 +204,16 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_supplier')
-              field: SUPPLIER_HK
+              arguments:
+                to: ref('hub_supplier')
+                field: SUPPLIER_HK
       - name: NATION_HK
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_nation')
-              field: NATION_HK
+              arguments:
+                to: ref('hub_nation')
+                field: NATION_HK
       - name: LOAD_DATETIME
         data_tests: [not_null]
       - name: RECORD_SOURCE
@@ -217,14 +228,16 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_nation')
-              field: NATION_HK
+              arguments:
+                to: ref('hub_nation')
+                field: NATION_HK
       - name: REGION_HK
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_region')
-              field: REGION_HK
+              arguments:
+                to: ref('hub_region')
+                field: REGION_HK
       - name: LOAD_DATETIME
         data_tests: [not_null]
       - name: RECORD_SOURCE
@@ -245,8 +258,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_customer')
-              field: CUSTOMER_HK
+              arguments:
+                to: ref('hub_customer')
+                field: CUSTOMER_HK
       - name: CUSTOMER_HASHDIFF
         data_tests: [not_null]
       - name: LOAD_DATETIME
@@ -266,8 +280,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_order')
-              field: ORDER_HK
+              arguments:
+                to: ref('hub_order')
+                field: ORDER_HK
       - name: ORDER_HASHDIFF
         data_tests: [not_null]
       - name: LOAD_DATETIME
@@ -287,8 +302,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('link_lineitem')
-              field: LINEITEM_HK
+              arguments:
+                to: ref('link_lineitem')
+                field: LINEITEM_HK
       - name: LINEITEM_HASHDIFF
         data_tests: [not_null]
       - name: LOAD_DATETIME
@@ -308,8 +324,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_part')
-              field: PART_HK
+              arguments:
+                to: ref('hub_part')
+                field: PART_HK
       - name: PART_HASHDIFF
         data_tests: [not_null]
       - name: LOAD_DATETIME
@@ -329,8 +346,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_supplier')
-              field: SUPPLIER_HK
+              arguments:
+                to: ref('hub_supplier')
+                field: SUPPLIER_HK
       - name: SUPPLIER_HASHDIFF
         data_tests: [not_null]
       - name: LOAD_DATETIME
@@ -350,8 +368,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('link_part_supplier')
-              field: PART_SUPPLIER_HK
+              arguments:
+                to: ref('link_part_supplier')
+                field: PART_SUPPLIER_HK
       - name: PART_SUPPLIER_HASHDIFF
         data_tests: [not_null]
       - name: LOAD_DATETIME
@@ -371,8 +390,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_nation')
-              field: NATION_HK
+              arguments:
+                to: ref('hub_nation')
+                field: NATION_HK
       - name: NATION_HASHDIFF
         data_tests: [not_null]
       - name: LOAD_DATETIME
@@ -392,8 +412,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('hub_region')
-              field: REGION_HK
+              arguments:
+                to: ref('hub_region')
+                field: REGION_HK
       - name: REGION_HASHDIFF
         data_tests: [not_null]
       - name: LOAD_DATETIME
