@@ -1,17 +1,28 @@
 version: 2
 
 models:
+  # ============================================================
+  # HUBS
+  # ============================================================
   - name: hub_customer
     description: "Customer hub (TPCH customer)."
     columns:
       - name: CUSTOMER_HK
         description: "Hash key for customer hub."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: C_CUSTKEY
         description: "Customer natural key from source."
-        tests:
+        data_tests:
+          - not_null
+      - name: LOAD_DATETIME
+        description: "Load timestamp."
+        data_tests:
+          - not_null
+      - name: RECORD_SOURCE
+        description: "Record source tag."
+        data_tests:
           - not_null
 
   - name: hub_order
@@ -19,385 +30,373 @@ models:
     columns:
       - name: ORDER_HK
         description: "Hash key for order hub."
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: O_ORDERKEY
-        description: "Order natural key from source."
-        tests:
-          - not_null
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: hub_part
     description: "Part hub (TPCH part)."
     columns:
       - name: PART_HK
-        description: "Hash key for part hub."
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: P_PARTKEY
-        description: "Part natural key from source."
-        tests:
-          - not_null
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: hub_supplier
     description: "Supplier hub (TPCH supplier)."
     columns:
       - name: SUPPLIER_HK
-        description: "Hash key for supplier hub."
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: S_SUPPKEY
-        description: "Supplier natural key from source."
-        tests:
-          - not_null
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: hub_nation
-    description: "Hub for nation reference data"
+    description: "Nation hub (reference data)."
     columns:
       - name: NATION_HK
-        description: "Hash key for nation"
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: N_NATIONKEY
-        description: "Natural key from source"
-        tests:
-          - not_null
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: hub_region
-    description: "Hub for region reference data"
+    description: "Region hub (reference data)."
     columns:
       - name: REGION_HK
-        description: "Hash key for region"
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: R_REGIONKEY
-        description: "Natural key from source"
-        tests:
-          - not_null
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
+  # ============================================================
+  # LINKS
+  # ============================================================
   - name: link_lineitem
-    description: "Link for lineitems, connecting order, part, and supplier."
+    description: "Link lineitem ↔ order / part / supplier."
     columns:
       - name: LINEITEM_HK
-        description: "Hash key for lineitem link."
-        tests:
-          - unique
-          - not_null
+        description: "Link primary hash key."
+        data_tests: [unique, not_null]
       - name: ORDER_HK
-        description: "FK to order hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_order')
+              field: ORDER_HK
       - name: PART_HK
-        description: "FK to part hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_part')
+              field: PART_HK
       - name: SUPPLIER_HK
-        description: "FK to supplier hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_supplier')
+              field: SUPPLIER_HK
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: link_order_customer
-    description: "Link between orders and customers"
+    description: "Link order ↔ customer."
     columns:
       - name: ORDER_CUSTOMER_HK
-        description: "Hash key for the link"
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: ORDER_HK
-        description: "FK to order hub"
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_order')
+              field: ORDER_HK
       - name: CUSTOMER_HK
-        description: "FK to customer hub"
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_customer')
+              field: CUSTOMER_HK
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: link_part_supplier
-    description: "Link between parts and suppliers (partsupp)."
+    description: "Link part ↔ supplier (partsupp)."
     columns:
       - name: PART_SUPPLIER_HK
-        description: "Hash key for part-supplier link."
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: PART_HK
-        description: "FK to part hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_part')
+              field: PART_HK
       - name: SUPPLIER_HK
-        description: "FK to supplier hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_supplier')
+              field: SUPPLIER_HK
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: link_customer_nation
-    description: "Link between customers and nations (C_NATIONKEY)."
+    description: "Link customer ↔ nation (C_NATIONKEY)."
     columns:
       - name: CUSTOMER_NATION_HK
-        description: "Hash key for the customer-nation link."
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: CUSTOMER_HK
-        description: "FK to customer hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_customer')
+              field: CUSTOMER_HK
       - name: NATION_HK
-        description: "FK to nation hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_nation')
+              field: NATION_HK
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: link_supplier_nation
-    description: "Link between suppliers and nations (S_NATIONKEY)."
+    description: "Link supplier ↔ nation (S_NATIONKEY)."
     columns:
       - name: SUPPLIER_NATION_HK
-        description: "Hash key for the supplier-nation link."
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: SUPPLIER_HK
-        description: "FK to supplier hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_supplier')
+              field: SUPPLIER_HK
       - name: NATION_HK
-        description: "FK to nation hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_nation')
+              field: NATION_HK
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: link_nation_region
-    description: "Link between nations and regions (N_REGIONKEY)."
+    description: "Link nation ↔ region (N_REGIONKEY)."
     columns:
       - name: NATION_REGION_HK
-        description: "Hash key for the nation-region link."
-        tests:
-          - unique
-          - not_null
+        data_tests: [unique, not_null]
       - name: NATION_HK
-        description: "FK to nation hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_nation')
+              field: NATION_HK
       - name: REGION_HK
-        description: "FK to region hub."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_region')
+              field: REGION_HK
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
+  # ============================================================
+  # SATELLITES
+  # ============================================================
   - name: sat_customer
-    description: "Customer satellite with descriptive attributes."
+    description: "Customer satellite — descriptive attributes (no FK leakage)."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [CUSTOMER_HK, CUSTOMER_HASHDIFF]
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [CUSTOMER_HK, LOAD_DATETIME]
     columns:
       - name: CUSTOMER_HK
-        description: "Hash key for customer."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_customer')
+              field: CUSTOMER_HK
       - name: CUSTOMER_HASHDIFF
-        description: "Hashdiff for customer payload."
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - CUSTOMER_HK
-              - CUSTOMER_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - CUSTOMER_HK
-              - LOAD_DATETIME
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: sat_order
-    description: "Order satellite with descriptive attributes."
+    description: "Order satellite — descriptive attributes."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [ORDER_HK, ORDER_HASHDIFF]
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [ORDER_HK, LOAD_DATETIME]
     columns:
       - name: ORDER_HK
-        description: "Hash key for order."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_order')
+              field: ORDER_HK
       - name: ORDER_HASHDIFF
-        description: "Hashdiff for order payload."
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - ORDER_HK
-              - ORDER_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - ORDER_HK
-              - LOAD_DATETIME
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: sat_lineitem
-    description: "Lineitem satellite with descriptive attributes."
+    description: "Lineitem satellite — descriptive/measure attributes on the link grain."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [LINEITEM_HK, LINEITEM_HASHDIFF]
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [LINEITEM_HK, LOAD_DATETIME]
     columns:
       - name: LINEITEM_HK
-        description: "Hash key for lineitem."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('link_lineitem')
+              field: LINEITEM_HK
       - name: LINEITEM_HASHDIFF
-        description: "Hashdiff for lineitem payload."
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - LINEITEM_HK
-              - LINEITEM_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - LINEITEM_HK
-              - LOAD_DATETIME
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: sat_part
-    description: "Part satellite with descriptive attributes."
+    description: "Part satellite — descriptive attributes."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [PART_HK, PART_HASHDIFF]
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [PART_HK, LOAD_DATETIME]
     columns:
       - name: PART_HK
-        description: "Hash key for part."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_part')
+              field: PART_HK
       - name: PART_HASHDIFF
-        description: "Hashdiff for part payload."
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - PART_HK
-              - PART_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - PART_HK
-              - LOAD_DATETIME
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: sat_supplier
-    description: "Supplier satellite with descriptive attributes."
+    description: "Supplier satellite — descriptive attributes."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [SUPPLIER_HK, SUPPLIER_HASHDIFF]
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [SUPPLIER_HK, LOAD_DATETIME]
     columns:
       - name: SUPPLIER_HK
-        description: "Hash key for supplier."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('hub_supplier')
+              field: SUPPLIER_HK
       - name: SUPPLIER_HASHDIFF
-        description: "Hashdiff for supplier payload."
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - SUPPLIER_HK
-              - SUPPLIER_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - SUPPLIER_HK
-              - LOAD_DATETIME
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: sat_part_supplier
-    description: "Satellite for part-supplier link attributes (partsupp)."
+    description: "Part-supplier link satellite (stock attributes)."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [PART_SUPPLIER_HK, PART_SUPPLIER_HASHDIFF]
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [PART_SUPPLIER_HK, LOAD_DATETIME]
     columns:
       - name: PART_SUPPLIER_HK
-        description: "Hash key for part-supplier link."
-        tests:
+        data_tests:
           - not_null
+          - relationships:
+              to: ref('link_part_supplier')
+              field: PART_SUPPLIER_HK
       - name: PART_SUPPLIER_HASHDIFF
-        description: "Hashdiff for part-supplier payload."
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - PART_SUPPLIER_HK
-              - PART_SUPPLIER_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - PART_SUPPLIER_HK
-              - LOAD_DATETIME
-
-  - name: sat_order_customer
-    description: "Satellite for order-customer link"
-    columns:
-      - name: ORDER_CUSTOMER_HASHDIFF
-        description: "Hashdiff for payload"
-        tests:
-          - not_null
-      - name: ORDER_CUSTOMER_HK
-        description: "Hash key for link"
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - ORDER_CUSTOMER_HK
-              - ORDER_CUSTOMER_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - ORDER_CUSTOMER_HK
-              - LOAD_DATETIME
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: sat_nation
-    description: "Satellite for nation attributes"
+    description: "Nation satellite — descriptive attributes (FK to region now lives only in link_nation_region)."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [NATION_HK, NATION_HASHDIFF]
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [NATION_HK, LOAD_DATETIME]
     columns:
-      - name: NATION_HASHDIFF
-        description: "Hashdiff for nation payload"
-        tests:
-          - not_null
       - name: NATION_HK
-        description: "Hash key for nation"
-        tests:
+        data_tests:
           - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - NATION_HK
-              - NATION_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - NATION_HK
-              - LOAD_DATETIME
+          - relationships:
+              to: ref('hub_nation')
+              field: NATION_HK
+      - name: NATION_HASHDIFF
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
 
   - name: sat_region
-    description: "Satellite for region attributes"
+    description: "Region satellite — descriptive attributes."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [REGION_HK, REGION_HASHDIFF]
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [REGION_HK, LOAD_DATETIME]
     columns:
       - name: REGION_HK
-        description: "Hash key for region"
-        tests:
+        data_tests:
           - not_null
-
+          - relationships:
+              to: ref('hub_region')
+              field: REGION_HK
       - name: REGION_HASHDIFF
-        description: "Hashdiff for region payload."
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - REGION_HK
-              - REGION_HASHDIFF
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - REGION_HK
-              - LOAD_DATETIME
+        data_tests: [not_null]
+      - name: LOAD_DATETIME
+        data_tests: [not_null]
+      - name: RECORD_SOURCE
+        data_tests: [not_null]
