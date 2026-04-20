@@ -15,7 +15,6 @@ hashed_columns:
     columns:
       - 'S_NAME'
       - 'S_ADDRESS'
-      - 'S_NATIONKEY'
       - 'S_PHONE'
       - 'S_ACCTBAL'
       - 'S_COMMENT'
