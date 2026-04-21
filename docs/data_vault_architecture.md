@@ -4,9 +4,9 @@ Este documento representa el **Raw Vault** del proyecto (Hubs, Links y Satellite
 
 > Objetivo: tener un artefacto visual para facilitar el salto posterior a **star schemas** en `marts/`.
 
-## Raw Vault ER diagram
+Los atributos de negocio en cada satélite coinciden con `src_payload` en `models/02_raw_vault/satellites/sat_*.sql`. **No hay** `sat_order_customer`: la relación Order–Customer es solo el link `link_order_customer`.
 
-## Raw Vault (solo Hubs + Links)
+## Raw Vault (Hubs + Links)
 
 ```mermaid
 erDiagram
@@ -106,7 +106,7 @@ erDiagram
   HUB_REGION ||--o{ LINK_NATION_REGION : relates
 ```
 
-## Raw Vault ER diagram
+## Raw Vault (Hubs + Links + Satellites)
 
 ```mermaid
 erDiagram
@@ -197,7 +197,6 @@ erDiagram
     string C_PHONE
     float C_ACCTBAL
     string C_MKTSEGMENT
-    int C_NATIONKEY
     string C_COMMENT
   }
 
@@ -242,7 +241,6 @@ erDiagram
     string S_ADDRESS
     string S_PHONE
     float S_ACCTBAL
-    int S_NATIONKEY
     string S_COMMENT
   }
 
@@ -253,7 +251,6 @@ erDiagram
     string RECORD_SOURCE
 
     string N_NAME
-    int N_REGIONKEY
     string N_COMMENT
   }
 
@@ -298,16 +295,6 @@ erDiagram
     string L_COMMENT
   }
 
-  SAT_ORDER_CUSTOMER {
-    string ORDER_CUSTOMER_HK FK
-    string ORDER_CUSTOMER_HASHDIFF
-    timestamp LOAD_DATETIME
-    string RECORD_SOURCE
-
-    string ORDER_HK
-    string CUSTOMER_HK
-  }
-
   %% ==================
   %% RELATIONSHIPS
   %% ==================
@@ -318,7 +305,6 @@ erDiagram
   HUB_NATION ||--o{ SAT_NATION : has
   HUB_REGION ||--o{ SAT_REGION : has
 
-  LINK_ORDER_CUSTOMER ||--o{ SAT_ORDER_CUSTOMER : has
   LINK_LINEITEM ||--o{ SAT_LINEITEM : has
   LINK_PART_SUPPLIER ||--o{ SAT_PART_SUPPLIER : has
 
@@ -347,3 +333,4 @@ erDiagram
 - Tipos (`string`, `int`, `float`, `date`, `timestamp`) son orientativos para el diagrama.
 - `LOAD_DATETIME` y `RECORD_SOURCE` se incluyen en todos los satélites por consistencia.
 - En DV, el satélite “cuelga” de su Hub o Link, y se identifica por `(HK, HASHDIFF, LOAD_DATETIME)`.
+- Claves de geografía del TPCH (`C_NATIONKEY`, `S_NATIONKEY`, `N_REGIONKEY`) no forman parte del payload de `sat_customer`, `sat_supplier` ni `sat_nation`; se modelan vía `link_customer_nation`, `link_supplier_nation` y `link_nation_region`.
