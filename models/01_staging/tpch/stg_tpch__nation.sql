@@ -14,7 +14,6 @@ hashed_columns:
     is_hashdiff: true
     columns:
       - 'N_NAME'
-      - 'N_REGIONKEY'
       - 'N_COMMENT'
 {%- endset -%}
 

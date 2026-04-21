@@ -3,7 +3,7 @@
 {%- set source_model = "stg_tpch__nation" -%}
 {%- set src_pk = "NATION_HK" -%}
 {%- set src_hashdiff = "NATION_HASHDIFF" -%}
-{%- set src_payload = ["N_NAME", "N_REGIONKEY", "N_COMMENT"] -%}
+{%- set src_payload = ["N_NAME", "N_COMMENT"] -%}
 {%- set src_ldts = "LOAD_DATETIME" -%}
 {%- set src_source = "RECORD_SOURCE" -%}
 
