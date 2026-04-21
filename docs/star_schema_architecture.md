@@ -1,34 +1,36 @@
 # Star Schema Architecture (Information Delivery Layer)
 
-This document describes the target **Business Vault (views)** and **Marts (Star Schema)** layers built on top of the existing **Raw Data Vault**.
+This document describes the **Business Vault** and **Marts** layers built on the **Raw Data Vault**, as implemented in this repository. For source-to-hub/link/sat mapping, see `source_to_data_vault.md` and `data_vault_architecture.md`.
 
 ## Goals
 
-- Provide **business-friendly naming** and a **robust** foundation for analytics.
-- Preserve **traceability** by using **Data Vault Hash Keys (HK)** as surrogate keys in dimensions and facts.
-- Model dimensions as **Current State** (latest satellite record per hub).
-- Standardize shared conformed dimensions (e.g., **Location**, **Date**).
+- Provide **business-friendly naming** and a stable surface for analytics.
+- Preserve **traceability** by using **Data Vault hash keys (`*_hk`)** as surrogate keys in dimensions and facts.
+- Expose **current state** for hubs and links used downstream, resolved with **PIT** (`pit_*`) + `as_of_date` (see `models/03_business_vault/`).
+- Reuse **conformed geography** via `bv_location_current` (nation + region names) for customer and supplier dimensions.
 
 ---
 
-## Implementation rules (agreed)
+## Implementation rules (as built)
 
-1. **Business Vault (Views) first**  
-   Create intermediate view models that flatten each Hub with the **latest active** record from its Satellite(s).  
-   - Rename columns to business names (e.g. `C_NAME` → `customer_name`)
-   - Apply soft cleaning rules (trim, upper/lower, null handling, standardization)
-   - Keep DV keys for lineage: `*_hk`, `load_datetime`, `record_source`
+1. **Business Vault first (`bv_*`)**  
+   View/table models that flatten hubs (and lineitem grain) to business columns, joining **PIT** outputs to the correct **satellite row** for the snapshot in `as_of_date`.  
+   - Business names (e.g. `C_NAME` → `customer_name`)  
+   - Light cleaning (`trim`, `upper` where applied in SQL)  
+   - Lineage fields retained where modeled: `load_datetime`, `record_source`
 
-2. **Primary Keys (PK)**  
-   Use **HKs** from Data Vault as surrogate keys in downstream models:
-   - `customer_hk`, `order_hk`, `part_hk`, `supplier_hk`, etc.
+2. **Primary keys**  
+   Downstream PKs/FKs use DV hash keys: `customer_hk`, `order_hk`, `part_hk`, `supplier_hk`, `lineitem_hk`, etc.
 
-3. **History handling**  
-   Marts represent **Current State** dimensions (latest satellite row per HK).
+3. **Current state**  
+   Marts dimensions and `bv_lineitem_sales` reflect **one row per business key** (or lineitem) for the snapshot driven by `as_of_date` and automate_dv PIT macros.
 
-4. **Geography**
-   - Create `dim_location` by joining **nation + region**.
-   - `dim_customer` and `dim_supplier` must include `nation_name` and `region_name`.
+4. **Geography**  
+   `bv_location_current` joins `bv_nation_current` and `bv_region_current` (region via `link_nation_region` already reflected in `bv_nation_current`).  
+   `dim_customers` and `dim_supplier` expose **`nation_name`** and **`region_name`** (denormalized); there is **no** separate `dim_location` mart model.
+
+5. **Order–Customer**  
+   There is **no** `sat_order_customer`. `customer_hk` on orders-at-lineitem grain comes from **`link_order_customer`** joined in `bv_lineitem_sales`.
 
 ---
 
@@ -36,7 +38,7 @@ This document describes the target **Business Vault (views)** and **Marts (Star 
 
 ```mermaid
 flowchart LR
-  subgraph "RAW_DV[Raw Data Vault]"
+  subgraph RAW_DV[Raw Data Vault]
     H_CUST[(hub_customer)]
     S_CUST[(sat_customer)]
     H_SUPP[(hub_supplier)]
@@ -51,7 +53,6 @@ flowchart LR
     S_REG[(sat_region)]
 
     L_OC[(link_order_customer)]
-    S_OC[(sat_order_customer)]
     L_LI[(link_lineitem)]
     S_LI[(sat_lineitem)]
     L_PS[(link_part_supplier)]
@@ -62,21 +63,22 @@ flowchart LR
     L_NR[(link_nation_region)]
   end
 
-  subgraph "BV[Business Vault (views)]"
-    BV_CUST[int_customer_current]
-    BV_SUPP[int_supplier_current]
-    BV_ORD[int_order_current]
-    BV_PART[int_part_current]
-    BV_LOC[int_location_current]
-    BV_LI[int_lineitem_sales]
+  subgraph BV[Business Vault]
+    BV_CUST[bv_customer_current]
+    BV_SUPP[bv_supplier_current]
+    BV_ORD[bv_order_current]
+    BV_PART[bv_part_current]
+    BV_NAT[bv_nation_current]
+    BV_REG[bv_region_current]
+    BV_LOC[bv_location_current]
+    BV_LI[bv_lineitem_sales]
   end
 
-  subgraph "MART[Marts (Star Schema)]"
+  subgraph MART[Marts]
     DIM_CUST[[dim_customers]]
     DIM_SUPP[[dim_supplier]]
     DIM_ORD[[dim_order]]
     DIM_PART[[dim_part]]
-    DIM_LOC[[dim_location]]
     DIM_DATE[[dim_date]]
     FCT[[fct_sales]]
   end
@@ -86,265 +88,138 @@ flowchart LR
   H_ORD --> S_ORD --> BV_ORD --> DIM_ORD
   H_PART --> S_PART --> BV_PART --> DIM_PART
 
-  H_NAT --> S_NAT --> BV_LOC --> DIM_LOC
-  H_REG --> S_REG --> BV_LOC --> DIM_LOC
-  L_NR --> BV_LOC
+  H_NAT --> S_NAT --> BV_NAT --> BV_LOC
+  H_REG --> S_REG --> BV_REG --> BV_LOC
+  L_NR --> BV_NAT
 
   L_CN --> BV_CUST
   L_SN --> BV_SUPP
+  BV_LOC --> BV_CUST
+  BV_LOC --> BV_SUPP
 
   L_LI --> S_LI --> BV_LI --> FCT
-  L_OC --> S_OC --> BV_LI
+  L_OC --> BV_LI
   BV_ORD --> BV_LI
 
   DIM_CUST --> FCT
   DIM_SUPP --> FCT
   DIM_ORD --> FCT
   DIM_PART --> FCT
-  DIM_LOC --> DIM_CUST
-  DIM_LOC --> DIM_SUPP
   DIM_DATE --> FCT
 ```
 
 ---
 
-## Business Vault layer (views)
+## Business Vault layer (`models/03_business_vault/`)
 
-> Convention: **`int_*`** are **views** that provide business-friendly columns and represent current state.
+**Convention:** `bv_*` models are the business-facing layer. **PIT** models (`pit_*`) and `as_of_date` implement the point-in-time bridge to satellites (see `_business_vault_models.yml`).
 
-### 1) `int_customer_current`
-Source: `hub_customer` + latest `sat_customer` + geography via `link_customer_nation` → nation/region
+### `as_of_date`
 
-Key columns:
-- `customer_hk` (HK; used as downstream PK)
-- `customer_id` (business key, e.g. `C_CUSTKEY`)
-- `load_datetime`, `record_source`
+Snapshot spine consumed by `automate_dv.pit()` (single current row in the default setup; extend for historical PITs if needed).
 
-Business columns:
-- `customer_name`
-- `address`
-- `phone`
-- `account_balance`
-- `market_segment`
-- `nation_name`
-- `region_name`
+### `bv_customer_current`
 
-Soft rules:
-- `trim()` everywhere
-- standardize casing for segments if needed
+**Source:** `hub_customer` → `pit_customer` → `sat_customer`; `link_customer_nation` for `nation_hk`; `bv_location_current` for `nation_name`, `region_hk`, `region_name`.
 
-### 2) `int_supplier_current`
-Source: `hub_supplier` + latest `sat_supplier` + geography via `link_supplier_nation`
+**Notable columns:** `customer_hk`, `customer_id`, `customer_name`, `address`, `phone`, `account_balance`, `market_segment`, `nation_hk`, `region_hk`, `nation_name`, `region_name`, `load_datetime`, `record_source`.
 
-Key columns:
-- `supplier_hk`
-- `supplier_id` (e.g. `S_SUPPKEY`)
+### `bv_supplier_current`
 
-Business columns:
-- `supplier_name`
-- `address`
-- `phone`
-- `account_balance`
-- `nation_name`
-- `region_name`
+**Source:** `hub_supplier` → `pit_supplier` → `sat_supplier`; `link_supplier_nation`; `bv_location_current`.
 
-### 3) `int_order_current`
-Source: `hub_order` + latest `sat_order`
+**Notable columns:** `supplier_hk`, `supplier_id`, `supplier_name`, `address`, `phone`, `account_balance`, `nation_hk`, `region_hk`, `nation_name`, `region_name`, `load_datetime`, `record_source`.
 
-Key columns:
-- `order_hk`
-- `order_id` (e.g. `O_ORDERKEY`)
+### `bv_order_current`
 
-Business columns:
-- `order_status`
-- `order_priority`
-- `clerk_name`
+**Source:** `hub_order` → `pit_order` → `sat_order`.
 
-Dates:
-- `order_date` (keep as a date)
+**Notable columns:** `order_hk`, `order_id`, `order_status`, `order_priority`, `clerk_name`, `order_date`, `load_datetime`, `record_source`.
 
-### 4) `int_part_current`
-Source: `hub_part` + latest `sat_part`
+### `bv_part_current`
 
-Key columns:
-- `part_hk`
-- `part_id` (e.g. `P_PARTKEY`)
+**Source:** `hub_part` → `pit_part` → `sat_part`.
 
-Business columns:
-- `part_name`
-- `brand`
-- `type`
-- `size`
+**Notable columns:** `part_hk`, `part_id`, `part_name`, `brand`, `part_type`, `part_size`, `container`, `retail_price`, `load_datetime`, `record_source`.
 
-### 5) `int_location_current`
-Source: `hub_nation + sat_nation` joined to `hub_region + sat_region` (optionally through `link_nation_region`)
+### `bv_nation_current` / `bv_region_current`
 
-Key columns:
-- `nation_hk`
-- `region_hk`
+**Source:** hub + PIT + satellite for nation and region respectively; `bv_nation_current` includes `region_hk` from `link_nation_region`.
 
-Business columns:
-- `nation_id`, `nation_name`
-- `region_id`, `region_name`
+### `bv_location_current`
 
-### 6) `int_lineitem_sales`
-Purpose: provide a mart-ready, lineitem-grain record.
-Source: `link_lineitem` + latest `sat_lineitem` + `int_order_current` (for `order_date`) + `link_order_customer` (for `customer_hk`)
+**Source:** `bv_nation_current` left join `bv_region_current` on `region_hk`.
 
-Key columns (hash FKs):
-- `order_hk`
-- `customer_hk`
-- `part_hk`
-- `supplier_hk`
+**Notable columns:** `nation_hk`, `nation_id`, `nation_name`, `region_hk`, `region_id`, `region_name`, load timestamps per entity.
 
-Dates:
-- `order_date`
-- `ship_date`
-- `receipt_date`
+### `bv_lineitem_sales`
 
-Measures:
-- `quantity`
-- `extended_price`
-- `discount_percentage`
-- `tax_percentage`
+**Grain:** one row per `lineitem_hk`.
 
-Derived measures:
-- `item_total_price = quantity * extended_price`
-- `net_revenue = item_total_price * (1 - discount_percentage)`
+**Source:** `link_lineitem` → `pit_lineitem` → `sat_lineitem`; `bv_order_current` for `order_date`; **`link_order_customer`** for `customer_hk` (no link satellite).
+
+**Measures / derived:** `quantity`, `extended_price`, `discount_percentage`, `tax_percentage`, `item_total_price`, `net_revenue`; dates `order_date`, `ship_date`, `commit_date`, `receipt_date` and `*_date_id` casts for role-playing joins to `dim_date`.
 
 ---
 
-## Mart layer (Star Schema)
+## Mart layer (`models/04_marts/core/`)
 
-### Fact: `fct_sales` (grain: **lineitem**)
-Primary key:
-- Could be `lineitem_hk` (from `link_lineitem`) **or** a deterministic composite key; preferred: `lineitem_hk`.
+Materializations follow `dbt_project.yml` (marts: **tables** on database `ANALYTICS`, schema `MARTS`).
 
-Foreign keys (HKs):
-- `order_hk`
-- `customer_hk`
-- `part_hk`
-- `supplier_hk`
+### `fct_sales`
 
-Dates:
-- `order_date`
-- `ship_date`
-- `receipt_date`
+- **Grain:** lineitem (`lineitem_hk` is the logical grain; incremental `unique_key`: `lineitem_hk`).
+- **FKs:** `order_hk`, `customer_hk`, `part_hk`, `supplier_hk`.
+- **Date keys:** `order_date_id`, `ship_date_id`, `receipt_date_id` (and raw dates).
+- **Measures:** `quantity`, `extended_price`, `discount_percentage`, `tax_percentage`, `item_total_price`, `net_revenue`, `load_datetime`.
 
-Measures:
-- `quantity`
-- `extended_price`
-- `discount_percentage`
-- `tax_percentage`
-- `item_total_price`
-- `net_revenue`
+**Build:** `select` from `bv_lineitem_sales` with incremental filter on `load_datetime`.
 
-### Dimensions
+### `dim_customers` / `dim_supplier` / `dim_order` / `dim_part`
 
-#### `dim_customers`
-PK:
-- `customer_hk`
+Thin selects over the corresponding `bv_*` models; attributes match `_marts_models.yml`.
 
-Attributes:
-- `customer_id`
-- `customer_name`
-- `market_segment`
-- `nation_name`
-- `region_name`
+- **`dim_order`** includes `order_date_id` (date spine join key).
+- **`dim_part`** exposes `part_type` and `part_size` (mart naming), not every BV attribute.
 
-#### `dim_order`
-PK:
-- `order_hk`
+### `dim_date`
 
-Attributes:
-- `order_id`
-- `order_status`
-- `order_priority`
-- `clerk_name`
-
-#### `dim_part`
-PK:
-- `part_hk`
-
-Attributes:
-- `part_id`
-- `part_name`
-- `brand`
-- `type`
-- `size`
-
-#### `dim_supplier`
-PK:
-- `supplier_hk`
-
-Attributes:
-- `supplier_id`
-- `supplier_name`
-- `nation_name`
-- `region_name`
-
-#### `dim_location`
-PK:
-- `nation_hk` (or a separate `location_hk` if you want a single key)
-Attributes:
-- `nation_id`, `nation_name`
-- `region_id`, `region_name`
-
-#### `dim_date`
-Approach options:
-- Use `dbt_utils.date_spine` to generate a date range, then enrich with calendar attributes
-- Or seed a standard date dimension
+Generated with **`dbt_utils.date_spine`** (1990-01-01 through 2030-12-31) plus calendar attributes (`year`, `quarter`, `month`, `week`, `day`, `day_name`, `month_name`, `is_weekend`). **`date_id`** is the calendar date.
 
 ---
 
-## Proposed dbt project structure
-
-> Keep the pattern already used in the repo (numbered layers) and add two new ones.
+## dbt project layout (reference)
 
 ```text
 models/
-  01_staging/
-    tpch/
-      ...
+  01_staging/tpch/
   02_raw_vault/
-    hubs/
-    links/
-    satellites/
-    _raw_vault_models.yml
-
+    hubs/  links/  satellites/
   03_business_vault/
+    as_of_date.sql
+    pit/
     core/
-      int_customer_current.sql
-      int_supplier_current.sql
-      int_order_current.sql
-      int_part_current.sql
-      int_location_current.sql
-      int_lineitem_sales.sql
-    _business_vault_models.yml
-
+      bv_customer_current.sql
+      bv_supplier_current.sql
+      bv_order_current.sql
+      bv_part_current.sql
+      bv_nation_current.sql
+      bv_region_current.sql
+      bv_location_current.sql
+      bv_lineitem_sales.sql
   04_marts/
     core/
       dim_customers.sql
       dim_supplier.sql
       dim_order.sql
       dim_part.sql
-      dim_location.sql
       dim_date.sql
       fct_sales.sql
-    _marts_models.yml
 ```
-
-Materializations (suggested):
-- `03_business_vault`: `view`
-- `04_marts`: `table` (or `incremental` for `fct_sales` if needed)
 
 ---
 
-## Open decisions (to confirm before building)
+## Notes
 
-1. **Fact PK**: use `LINEITEM_HK` directly as fact PK (recommended).
-2. **dim_location PK**: keep `nation_hk` as PK, or create a dedicated `location_hk`.
-3. **dim_date generation**: seed vs `date_spine`.
-
-Once you confirm these 3, we can scaffold the actual dbt models for `03_business_vault` and `04_marts` consistently.
-
+- **`dim_location`** is not implemented as a mart; geography for customers and suppliers is denormalized into their dimensions via `bv_location_current`.
+- Raw Vault payloads and links are documented in **`source_to_data_vault.md`**; the Mermaid Raw Vault diagram lives in **`data_vault_architecture.md`**.
